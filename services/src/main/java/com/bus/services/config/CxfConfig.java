@@ -1,5 +1,6 @@
 package com.bus.services.config;
 
+import com.bus.services.services.RoutesService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
 import javax.ws.rs.core.MediaType;
 import java.util.*;
 
@@ -28,6 +30,8 @@ import java.util.*;
  */
 @Configuration
 public class CxfConfig {
+    @Resource
+    private RoutesService routesService;
     @Value("${testing:false}")
     private boolean testing;
     @Value("${vinz.endpoint}")
@@ -61,7 +65,7 @@ public class CxfConfig {
     @Bean
     public Server restServer() {
         List<Object> serviceBeans = new ArrayList<>();
-
+        serviceBeans.add(routesService);
         JAXRSServerFactoryBean factoryBean = new JAXRSServerFactoryBean();
         factoryBean.setAddress("");
         factoryBean.setServiceBeans(serviceBeans);

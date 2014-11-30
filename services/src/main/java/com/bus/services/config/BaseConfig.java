@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @Configuration
 @EnableAsync(proxyTargetClass = true)
-@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class BaseConfig {
 
     @Value("${vinz.endpoint}")
