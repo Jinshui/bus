@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="css/bus.css"/>
+    <script src="js/gen/lib.js"></script>
+</head>
+<body>
+    <div data-role="page" id="admin_routes">
+        <div data-role="content" style="padding: 0">
+            <div class="content_header" style="background-color: gray;">
+                <h3>添加发车时间</h3>
+            </div>
+            <form>
+                <div class="content_header">
+                    生效日期A1
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="start_date">生效日期:</label>
+                    <input type="date" name="startDate" id="start_date"  placeholder="生效日期">
+                    <label for="end_date">截止日期:</label>
+                    <input type="date" name="endDate" id="end_date"  placeholder="截止日期">
+                    <label for="start_times">发车时间:</label>
+                    <textarea name="startTimes" id="start_times"  placeholder="格式:0720 0740 中间用空格分开"></textarea>
+                    <label for="weekend_on">周末是否发车:</label>
+                    <input type="checkbox" data-role="flipswitch" name="weekendOn" id="weekend_on" data-on-text="是" data-off-text="否"/>
+                </div>
+            </form>
+            <div class="footer_btn">
+                <a href="">下一步</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

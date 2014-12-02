@@ -16,17 +16,15 @@
     </div>
 
     <div data-role="content">
-        <form method="post" action="routes">
-            <div data-role="fieldcontain">
-                <label for="fullname">全名：</label>
-                <input type="text" name="fullname" id="fullname">
-                <label for="bday">生日：</label>
-                <input type="date" name="bday" id="bday">
-                <label for="email">E-mail:</label>
-                <input type="email" name="email" id="email" placeholder="你的电子邮箱..">
-            </div>
-            <input type="submit" data-inline="true" value="提交">
-        </form>
+        <div data-role="fieldcontain">
+            <label for="route_name">路线名称：</label>
+            <input type="text" name="route_name" id="route_name" placeholder="请输入路线名称">
+            <label for="route_map">路线地图(选填)：</label>
+            <input type="file" name="route_map" id="route_map">
+            <label for="route_price">票价:</label>
+            <input type="number" name="route_price" id="route_price" placeholder="人民币">
+        </div>
+        <input type="submit" data-inline="true" value="提交">
     </div>
 </div>
 

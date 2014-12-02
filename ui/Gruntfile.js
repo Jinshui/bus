@@ -61,8 +61,9 @@ module.exports = function(grunt) {
             },
             html: {
                 expand: true,
-                flatten: true,
-                src: [basedir + "/**/*.html"],
+                cwd: basedir ,
+                flatten: false,
+                src: ["**/*.html", 'images/**'],
                 dest: warPath,
                 filter: 'isFile'
             },

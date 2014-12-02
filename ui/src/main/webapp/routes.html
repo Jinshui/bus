@@ -4,21 +4,33 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="css/bus.css"/>
     <script src="js/gen/lib.js"></script>
     <script src="js/gen/app.js"></script>
     <script src="js/gen/template.js"></script>
     <script>
         $(document).on("pagebeforecreate","#admin_routes",function(){
+            var page = $("#admin_routes");
             var template = Bus['admin/routes'];
             var context = {};
             var content = template(context);
-            $("#admin_routes").html(content);
-          });
+            page.html(content);
+            $("#btn_edit_route").on('click', function(){
+                template = Bus['admin/addRoute'];
+                content = template(context);
+                page = $("#add_route");
+                page.html(content);
+                $.mobile.changePage("#add_route", { transition: "slideup" });
+                page.enhanceWithin();
+            });
+        });
     </script>
 </head>
 
 <body>
     <div data-role="page" id="admin_routes">
+    </div>
+    <div data-role="page" id="add_route">
     </div>
 </body>
 </html>
