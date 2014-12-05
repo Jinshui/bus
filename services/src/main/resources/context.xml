@@ -5,11 +5,8 @@
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <!--<import resource="classpath:context-dao.xml"/>-->
-    <!--<import resource="classpath:context-transaction.xml"/>-->
 
     <context:component-scan base-package="com.bus.services.config"/>
     <context:component-scan base-package="com.bus.services.repositories"/>
     <context:component-scan base-package="com.bus.services.services"/>
-    <!--<context:component-scan base-package="com.bus.services.dao.impl"/>-->
 </beans>

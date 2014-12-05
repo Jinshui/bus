@@ -12,7 +12,6 @@ import com.mongodb.util.JSON;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -128,7 +127,7 @@ public abstract class AbstractMongoRepository<T extends MongoPersistent> impleme
      * {@inheritDoc}
      */
     @Override
-    public T save(T entity) throws ConstraintViolationException, DuplicateKeyException {
+    public T save(T entity) throws ConstraintViolationException {
         entity.onBeforeSave();
         Set<ConstraintViolation<?>> constraintViolations = new HashSet<>();
         if (getValidator() != null) { constraintViolations.addAll(getValidator().validate(entity)); }
