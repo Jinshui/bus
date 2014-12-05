@@ -34,8 +34,6 @@ public class CxfConfig {
     private RoutesService routesService;
     @Value("${testing:false}")
     private boolean testing;
-    @Value("${vinz.endpoint}")
-    private String vinzEndpoint;
 
     //Beans for metamore-ui
     private static class MetaMoreObjectMapper extends ObjectMapper {

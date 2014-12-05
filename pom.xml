@@ -22,8 +22,10 @@
         <build-commit-abbrev>0</build-commit-abbrev>
         <bval.version>0.5</bval.version>
         <camel.version>2.11.0</camel.version>
+        <commons.collections.version>3.2</commons.collections.version>
         <commons-codec.version>1.8</commons-codec.version>
         <commons-lang3.version>3.2</commons-lang3.version>
+        <commons-dhcp.version>1.4</commons-dhcp.version>
         <commons-net.version>3.3</commons-net.version>
         <commons-vfs2.version>2.0</commons-vfs2.version>
         <cargo.rmi.port>9010</cargo.rmi.port>
@@ -35,6 +37,8 @@
         <enunciate.version>1.26.2</enunciate.version>
         <guava.version>15.0</guava.version>
         <hibernate.version>3.6.10.Final</hibernate.version>
+        <json-simple.version>1.1.1</json-simple.version>
+        <httpclient-version>4.3.1</httpclient-version>
         <idl-compiler.version>3.0</idl-compiler.version>
         <idlj-maven-plugin.version>1.2.1</idlj-maven-plugin.version>
         <itest.src.path>${basedir}/target/itest-src</itest.src.path>
@@ -45,7 +49,9 @@
         <jacorb.version>3.2</jacorb.version>
         <janino.version>2.6.1</janino.version>
         <java.version>1.7</java.version>
-        <javassist.version>3.4.GA</javassist.version>
+        <validation-api-version>1.1.0.Final</validation-api-version>
+        <javassist.version>3.13.0-GA</javassist.version>
+        <ehcache.version>2.6.3</ehcache.version>
         <jaxb-api.version>2.2.11</jaxb-api.version>
         <jaxb-impl.version>2.2.11</jaxb-impl.version>
         <joda-time.version>2.3</joda-time.version>
@@ -60,6 +66,9 @@
         <maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
         <maven-war-plugin.version>2.2</maven-war-plugin.version>
         <mockito.version>1.9.5</mockito.version>
+        <mysql.version>5.1.22</mysql.version>
+        <mongo-driver.version>2.12.2</mongo-driver.version>
+        <spring-data-mongodb.version>1.5.0.RELEASE</spring-data-mongodb.version>
         <objenesis.version>1.2</objenesis.version>
         <poi.version>3.9</poi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -217,6 +226,11 @@
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
             </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation-api-version}</version>
+            </dependency>
             <!-- cglib -->
             <dependency>
                 <groupId>cglib</groupId>
@@ -230,6 +244,11 @@
                 <version>${commons-codec.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons.collections.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
@@ -240,6 +259,11 @@
                 <version>${commons-net.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${commons-dhcp.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-vfs2</artifactId>
                 <version>${commons-vfs2.version}</version>
@@ -247,6 +271,23 @@
                     <exclusion>
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+            <!-- ehcache -->
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${ehcache.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -307,12 +348,7 @@
                 <artifactId>cxf-rt-transports-http</artifactId>
                 <version>${cxf.version}</version>
             </dependency>
-            <!-- enunciate -->
-            <dependency>
-                <groupId>org.codehaus.enunciate</groupId>
-                <artifactId>enunciate-core-annotations</artifactId>
-                <version>${enunciate.version}</version>
-            </dependency>
+
             <!-- mongo -->
             <dependency>
                 <groupId>org.mongodb</groupId>
@@ -348,6 +384,28 @@
                     <exclusion>
                         <groupId>org.mongodb</groupId>
                         <artifactId>mongo-java-driver</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- MySQL -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -398,19 +456,31 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            <!-- validation (jsr311) -->
+            <!-- http client -->
             <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${validation-api.version}</version>
+                <groupId>com.googlecode.json-simple</groupId>
+                <artifactId>json-simple</artifactId>
+                <version>${json-simple.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>org.apache.bval</groupId>
-                <artifactId>org.apache.bval.bundle</artifactId>
-                <version>${bval.version}</version>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>

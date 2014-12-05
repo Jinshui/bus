@@ -14,13 +14,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @author <a href="mailto:jeffb@thistech.com">Jeff Bailey</a>
  */
 @Configuration
-@EnableAsync(proxyTargetClass = true)
 public class BaseConfig {
-
-    @Value("${vinz.endpoint}")
-    private String vinzEndpoint;
-    @Value("${vinz.apiKey}")
-    private String vinzApiKey;
 
     @Bean
     public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
