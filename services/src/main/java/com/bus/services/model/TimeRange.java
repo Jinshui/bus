@@ -1,5 +1,6 @@
 package com.bus.services.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,33 @@ public class TimeRange {
     private Date startTime;
     private Date endTime;
     private List<Vehicle> vehicles;
+
+    public List<Vehicle> getVehicles() {
+        if(vehicles == null){
+            vehicles = new ArrayList<>();
+        }
+        return vehicles;
+    }
+
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 }
 
 //        startTime: '2014.12.01',

@@ -1,4 +1,4 @@
-package com.bus.services.model;
+package com.bus.services.model.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;

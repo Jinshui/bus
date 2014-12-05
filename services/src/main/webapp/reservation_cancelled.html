@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="css/bus.css"/>
     <script src="js/gen/lib.js"></script>
     <style>
-        body{
-            margin: 0;
-        }
         .div_with_title{
             border: 1px dashed #000;
             padding: 0 10px 10px;
@@ -24,23 +21,27 @@
     </style>
 </head>
 <body>
-    <div >
-        <div style="padding: 10px;">
+    <div data-role="page" id="admin_routes">
+        <div data-role="content" style="padding: 10px;">
             <div style="padding:5px; background-color:white; color:gray">
                 <div style="height:10px; "></div>
                 <div style="font-size: larger">
-                    <span style="color:red">预约失败!</span>
+                    <span style="color:darkgreen">已取消预约</span>
                     <div style="height:10px"><hr></div>
                     11月24日 星期一 07:20
                 </div>
                 <div style="height:7px"></div>
-                望京西站 开往 <span style="color:black">望京soho</span><br>
+                望京西站 开往 望京soho<br>
                 途经: 福码大厦, 竹藤大厦, 望京西区四区, 大西洋新城, 花家地西里
                 <div style="font-size: large">
                 乘车地点: 望京西站A口
                 </div>
                 <div style="height:15px"><hr></div>
-                <span style="color:red; font-size: larger">您预约的车辆座位已满,您可以重新预约,或者选择其它时间的车辆.</span>
+                车次: S1A11240809<br>
+                车牌: 京AC5032<br>
+                司机: 王师傅 18888888888
+                <div style="height:7px"></div>
+                统一票价为10元
             </div>
             <div style="height:20px"></div>
             <div class="div_with_title">
@@ -51,8 +52,8 @@
             </div>
             <div style="height:10px"></div>
         </div>
-        <div class="footer_btn" style="position:fixed;bottom:0;width:100%">
-            重新预约
+        <div class="footer_btn" style="background-color:darkgreen">
+            <a href="">重新预约</a>
         </div>
     </div>
 </body>

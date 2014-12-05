@@ -1,6 +1,7 @@
 package com.bus.services.model;
 
 
+import com.bus.services.model.base.BaseMongoPersistent;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = WxToken.MONGO_COLLECTION)

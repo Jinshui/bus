@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
     var basedir = "src/main/webapp";
-    var warPath = "target/ui-1.0.0-SNAPSHOT";
+    var warPath = "target/services-1.0.0-SNAPSHOT";
 
     grunt.initConfig({
         handlebars: {

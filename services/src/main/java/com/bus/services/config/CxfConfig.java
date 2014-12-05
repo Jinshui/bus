@@ -16,6 +16,7 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.rs.security.cors.CrossOriginResourceSharingFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,12 +33,9 @@ import java.util.*;
 public class CxfConfig {
     @Resource
     private RoutesService routesService;
-    @Value("${testing:false}")
-    private boolean testing;
-
     //Beans for metamore-ui
-    private static class MetaMoreObjectMapper extends ObjectMapper {
-        public MetaMoreObjectMapper() {
+    private static class BusObjectMapper extends ObjectMapper {
+        public BusObjectMapper() {
             setAnnotationIntrospector(new AnnotationIntrospectorPair(new JacksonAnnotationIntrospector(), new JaxbAnnotationIntrospector(getTypeFactory())));
             configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, false);
@@ -73,12 +71,15 @@ public class CxfConfig {
         extMappings.put("json", MediaType.APPLICATION_JSON);
         extMappings.put("xml", MediaType.APPLICATION_XML);
         factoryBean.setExtensionMappings(extMappings);
+        CrossOriginResourceSharingFilter filter = new CrossOriginResourceSharingFilter();
+        filter.setAllowOrigins(Arrays.asList("http://127.0.0.1", "http://localhost", "http://127.0.0.1:8080", "http://localhost:8080"));
         factoryBean.setProviders(Arrays.asList(
 //                new StringMessageBodyReader(),
 //                new StringMessageBodyWriter(),
 //                new ConstraintViolationExceptionMapper(),
 //                new DuplicateEntityExceptionMapper(),
-                new JacksonJsonProvider(new MetaMoreObjectMapper())));
+                filter,
+                new JacksonJsonProvider(new BusObjectMapper())));
 
         return factoryBean.create();
     }

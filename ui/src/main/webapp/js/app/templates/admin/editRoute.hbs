@@ -1,0 +1,31 @@
+<div data-role="content" style="padding: 0">
+    <div class="content_header" style="background-color: gray;">
+        <h3>路线添加</h3>
+        {{#if edit}}
+            <div class="del_button" id="btn_delete_route">
+                删除
+            </div>
+        {{/if}}
+    </div>
+    {{!--<form method="post" action="/bus-services/routes/edit" data-ajax="false" id="form_edit_route" enctype="multipart/form-data">--}}
+    <div data-role="fieldcontain" style="padding-left: 10px; padding-right: 10px">
+        <label for="route_name">路线名称：</label>
+        <input type="text" name="name" id="route_name" placeholder="请输入路线名称">
+        <label for="route_map">路线地图(选填)：</label>
+        <input type="file" name="map" id="route_map">
+        <label for="route_price">票价:</label>
+        <input type="number" name="price" id="route_price" placeholder="人民币">
+        <label for="start_station">起点:</label>
+        <input type="text" name="startStation" id="start_station" placeholder="起始站">
+        <label for="start_station_desc">起点描述:</label>
+        <textarea name="startStationDesc" id="start_station_desc" placeholder="起始地点详细描述"></textarea>
+        <label for="end_station">终点:</label>
+        <input type="text" name="endStation" id="end_station" placeholder="多个终点以顿号分隔">
+        <label for="middle_stations">途经站:</label>
+        <input type="text" name="middleStations" id="middle_stations" placeholder="多个途经站以顿号分隔">
+    </div>
+    <div class="footer_btn" id="btn_edit_route_next_step" >
+        下一步
+    </div>
+    {{!--</form>--}}
+</div>

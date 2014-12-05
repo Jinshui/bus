@@ -1,6 +1,6 @@
-package com.bus.services.repositories;
+package com.bus.services.repositories.base;
 
-import com.bus.services.model.MongoPersistent;
+import com.bus.services.model.base.MongoPersistent;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 

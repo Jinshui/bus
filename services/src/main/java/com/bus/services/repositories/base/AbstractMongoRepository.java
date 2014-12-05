@@ -1,7 +1,7 @@
-package com.bus.services.repositories;
+package com.bus.services.repositories.base;
 
 import com.bus.services.exceptions.ApplicationException;
-import com.bus.services.model.MongoPersistent;
+import com.bus.services.model.base.MongoPersistent;
 import com.bus.services.util.BooleanUtil;
 import com.bus.services.util.CollectionUtil;
 import com.bus.services.util.MongoUtils;

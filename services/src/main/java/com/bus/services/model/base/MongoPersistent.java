@@ -1,4 +1,4 @@
-package com.bus.services.model;
+package com.bus.services.model.base;
 
 import java.io.Serializable;
 import java.util.Date;
