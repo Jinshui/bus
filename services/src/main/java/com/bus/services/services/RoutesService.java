@@ -4,9 +4,8 @@ import com.bus.services.model.Route;
 import com.bus.services.repositories.RouteRepository;
 import com.bus.services.util.CollectionUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.cxf.helpers.FileUtils;
-import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.codehaus.plexus.util.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 
@@ -55,12 +53,12 @@ public class RoutesService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Route addRoute(List<Attachment> attachments, @QueryParam("name")String name, @QueryParam("price")String price,
                           @QueryParam("startStation")String startStation, @QueryParam("startStationDesc")String startStationDesc,
-                          @QueryParam("endStation")String endStation, @QueryParam("middleStations")String middleStations,
-                          @QueryParam("fileName")String fileName){
+                          @QueryParam("endStation")String endStation, @QueryParam("middleStations")String middleStations){
         try{
             Route route = new Route();
             if(CollectionUtil.isNotEmpty(attachments)){
                 String fileExt = "";
+                String fileName = attachments.get(0).getDataHandler().getName();
                 if(StringUtils.isNotEmpty(fileName)){
                     fileExt = fileName.substring(fileName.lastIndexOf("."));
                 }
@@ -78,7 +76,7 @@ public class RoutesService {
                     byte[] data = new byte[1024];
                     int length = is.read(data);
                     while(length != -1){
-                        fileOutputStream.write(data);
+                        fileOutputStream.write(data, 0, length);
                         fileOutputStream.flush();
                         length = is.read(data);
                     }
