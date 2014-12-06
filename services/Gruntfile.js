@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
-    var basedir = "src/main/webapp/ui";
-    var warPath = "target/services-1.0.0-SNAPSHOT/ui";
+    var basedir = "src/main/webapp";
+    var warPath = "target/services-1.0.0-SNAPSHOT";
 
     grunt.initConfig({
         handlebars: {
@@ -17,18 +17,18 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    "src/main/webapp/ui/js/gen/template.js" : [basedir + "/js/app/templates/**/*.hbs"]
+                    "src/main/webapp/js/gen/template.js" : [basedir + "/js/app/templates/**/*.hbs"]
                 }
             }
         },
         concat: {
             libs: {
                 src: [
-                    basedir + "/js/libs/jquery.js",
+                    basedir + "/js/libs/jquery-2.1.1.js",
+                    basedir + "/js/libs/jquery.mobile-1.4.5.js",
                     basedir + "/js/libs/jquery.iframe-transport.js",
                     basedir + "/js/libs/jquery.ui.widget.js",
                     basedir + "/js/libs/jquery.fileupload.js",
-//                    basedir + "/js/libs/jquery.mobile-1.4.5.js",
                     basedir + "/js/libs/handlebars-v2.0.0.js"
                 ],
                 dest: basedir + "/js/gen/lib.js"

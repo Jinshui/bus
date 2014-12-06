@@ -9,9 +9,6 @@
     <script src="js/gen/app.js"></script>
     <script src="js/gen/template.js"></script>
     <script>
-        $(document).ready(function(){
-            transitionToRoutesPage();
-        });
         $(document).on("pageinit","#all_routes",function(){
             transitionToRoutesPage();
         });
@@ -23,7 +20,7 @@
         function transitionToRoutesPage(){
             $.ajax({
                 type: 'GET',
-                url: "/bus/services/routes",
+                url: "/bus-services/routes",
                 crossDomain: true
             }).done(function( data, textStatus, jqXHR ){
                 showRoutesPage(data);
@@ -35,11 +32,9 @@
         function showRoutesPage(data){
             showPage('all_routes', 'admin/routes', {routes:data});
             $("#btn_edit_route").on('click', function(){
-                hidePage('all_routes');
                 showEditRoutePage({edit:true});
             });
             $("#btn_add_route").on('click', function(){
-                hidePage('all_routes');
                 showEditRoutePage({});
             });
         }
@@ -58,7 +53,7 @@
             $("#btn_delete_route").on('click', function(){
                 $.ajax({
                     type: 'DELETE',
-                    url: "/bus/services/routes/" + data.id,
+                    url: "/bus-services/routes/" + data.id,
                     crossDomain: true
                 }).done(function( data, textStatus, jqXHR ){
                     transitionToRoutesPage();
@@ -67,7 +62,7 @@
                 });
             });
             $("#btn_edit_route_next_step").on('click', function(){
-                var url = "/bus/services/routes?"+
+                var url = "/bus-services/routes?"+
                         "name="+$("#route_name")[0].value +
                         "&price="+$("#route_price")[0].value +
                         "&startStation="+$("#start_station")[0].value +
@@ -90,18 +85,13 @@
             showPage('edit_route_step2', 'admin/editRouteStep2', data);
         }
 
-        function hidePage(targetId){
-            var page = $("#"+targetId);
-            page.html("");
-        }
-
         function showPage(targetId, templateName,  data){
             var page = $("#"+targetId);
             var template = Bus[templateName];
             var content = template(data);
             page.html(content);
-//            $.mobile.changePage("#"+targetId, { transition: "fade" });
-//            page.enhanceWithin();
+            $.mobile.changePage("#"+targetId, { transition: "fade" });
+            page.enhanceWithin();
         }
     </script>
 </head>
