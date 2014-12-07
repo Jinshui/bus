@@ -6,3 +6,5 @@ target/
 .classpath
 ui/node_modules
 ui/src/main/webapp/js/gen
+services/src/main/webapp/js/gen
+services/node_modules

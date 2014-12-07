@@ -8,7 +8,7 @@
 
     <modules>
         <module>services</module>
-      <!--  <module>ui</module> -->
+        <module>ui</module>
     </modules>
 
     <organization>
@@ -18,7 +18,6 @@
 
     <properties>
         <build.date>${maven.build.timestamp}</build.date>
-        <grunt-plugin.version>1.0.3</grunt-plugin.version>
         <buildversion-plugin.version>1.0.1</buildversion-plugin.version>
         <build-commit-abbrev>0</build-commit-abbrev>
         <bval.version>0.5</bval.version>

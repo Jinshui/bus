@@ -1,14 +1,17 @@
 package com.bus.services.services;
 
+import com.bus.services.exceptions.ApplicationException;
 import com.bus.services.model.Route;
 import com.bus.services.repositories.RouteRepository;
 import com.bus.services.util.CollectionUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.helpers.FileUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.util.List;
 
 
@@ -32,6 +35,8 @@ public class RoutesService {
     private String uploadPath;
     @Resource
     RouteRepository routeRepository;
+    @Autowired
+    ObjectMapper objectMapper;
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Route> getAllRoutes(){
@@ -47,61 +52,51 @@ public class RoutesService {
         return routeRepository.save(route);
     }
     @DELETE
-    public void deleteRoute(Route route){
-        routeRepository.delete(route);
+    @Path("/{id}")
+    public void deleteRoute(@PathParam("id")String id){
+        routeRepository.delete(id);
     }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Route addRoute(List<Attachment> attachments, @QueryParam("name")String name, @QueryParam("price")String price,
                           @QueryParam("startStation")String startStation, @QueryParam("startStationDesc")String startStationDesc,
-                          @QueryParam("endStation")String endStation, @QueryParam("middleStations")String middleStations,
-                          @QueryParam("fileName")String fileName){
+                          @QueryParam("endStation")String endStation, @QueryParam("middleStations")String middleStations) throws ApplicationException{
         try{
-            Route route = new Route();
-            if(CollectionUtil.isNotEmpty(attachments)){
-                String fileExt = "";
-                if(StringUtils.isNotEmpty(fileName)){
-                    fileExt = fileName.substring(fileName.lastIndexOf("."));
-                }
-                if(StringUtils.isEmpty(fileExt)){
-                    fileExt = ".jpg";
-                }
-                String mapFileName = "map_" + System.currentTimeMillis() + fileExt;
-                String filePath = uploadPath + "/maps/" + mapFileName;
-                route.setMapFileName(mapFileName);
-                FileOutputStream fileOutputStream = null;
-                InputStream is = null;
-                try{
-                    fileOutputStream = new FileOutputStream(new File(filePath));
-                    is = attachments.get(0).getDataHandler().getInputStream();
-                    byte[] data = new byte[1024];
-                    int length = is.read(data);
-                    while(length != -1){
-                        fileOutputStream.write(data);
-                        fileOutputStream.flush();
-                        length = is.read(data);
+            Route route = null;
+            String mapFileName = null;
+            for(Attachment attachment : attachments){
+                String dataName = attachment.getDataHandler().getName();
+                if(dataName.equals("data")){
+                    String json = IOUtils.toString(attachment.getDataHandler().getInputStream(), "UTF-8");
+                    log.debug("JSON body: {}", json);
+                    route = objectMapper.readValue(json, Route.class);
+                }else{ //file
+                    mapFileName = "map_" + System.currentTimeMillis() + "_" + dataName;
+                    String filePath = uploadPath + "/maps/" + mapFileName;
+                    FileOutputStream fileOutputStream = null;
+                    InputStream is = null;
+                    try{
+                        fileOutputStream = new FileOutputStream(new File(filePath));
+                        is = attachment.getDataHandler().getInputStream();
+                        byte[] data = new byte[1024];
+                        int length = is.read(data);
+                        while(length != -1){
+                            fileOutputStream.write(data, 0, length);
+                            fileOutputStream.flush();
+                            length = is.read(data);
+                        }
+                    }finally {
+                        try{ is.close(); }catch (Exception e){}
+                        try{ fileOutputStream.close(); }catch (Exception e){}
                     }
-                }finally {
-                    try{ is.close(); }catch (Exception e){}
-                    try{ fileOutputStream.close(); }catch (Exception e){}
                 }
             }
-            route.setName(name);
-            try{
-                route.setPrice(Integer.valueOf(price));
-            }catch (Exception e){
-                log.warn("Invalid price found: {}", price);
-            }
-            route.setStartStation(startStation);
-            route.setStartStationDesc(startStationDesc);
-            route.setEndStation(endStation);
-            route.setMiddleStations(middleStations);
             return routeRepository.save(route);
         }
         catch (Exception e) {
             log.warn("Failed to create route due to errors: ", e);
-            return null;
+            throw new ApplicationException(e.getMessage());
         }
     }
 }

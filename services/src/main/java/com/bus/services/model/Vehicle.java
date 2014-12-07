@@ -5,9 +5,11 @@ import java.util.List;
 
 public class Vehicle {
     private String name;
+    private int seatCount;
     private String licenseTag;
     private String driverName;
     private String driverContact;
+    private String company;
     private List<String> startPoints;
 
     public List<String> getStartPoints() {
@@ -21,12 +23,28 @@ public class Vehicle {
         this.startPoints = startPoints;
     }
 
+    public int getSeatCount(){
+        return seatCount;
+    }
+
+    public void setSeatCount(int seatCount){
+        this.seatCount = seatCount;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCompany(){
+        return company;
+    }
+
+    public void setCompany(String company){
+        this. company = company;
     }
 
     public String getLicenseTag() {
@@ -53,11 +71,3 @@ public class Vehicle {
         this.driverContact = driverContact;
     }
 }
-
-//        {
-//        name: '巴士A1',
-//        id  : '京CA0653',
-//        driverName: '陈师傅',
-//        driverPhone: '18888888888',
-//        startPoints: ['07:20', '08:00', '08:40', 09:20]
-//        }

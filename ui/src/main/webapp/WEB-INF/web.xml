@@ -3,4 +3,14 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
         version="2.4">
     <display-name>Bus-UI</display-name>
+
+    <servlet>
+        <servlet-name>reserveRouteServlet</servlet-name>
+        <servlet-class>com.bus.ui.servlets.ReserveRouteServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>reserveRouteServlet</servlet-name>
+        <url-pattern>/reserve.do</url-pattern>
+    </servlet-mapping>
 </web-app>

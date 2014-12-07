@@ -7,13 +7,13 @@
     {{#each routes}}
         <div class="content_header">
             {{name}}
-            <div class="edit_button" id="btn_edit_route">
+            <div class="edit_button" id="{{@index}}">
                 编辑
             </div>
         </div>
         <div class="text_panel">
             <b>起点:</b>&nbsp;{{startStation}}&nbsp;&nbsp;&nbsp;&nbsp;<b>终点:</b>&nbsp;{{endStation}}<br>
-            <b>途经:</b>&nbsp;{{#each middleStations}}{{this}}, {{/each}}
+            <b>途经:</b>&nbsp;{{middleStations}}
         </div>
         {{#each timeRanges}}
             <div class="route_date_info">日期: {{startTime}} ~ {{endTime}}</div>

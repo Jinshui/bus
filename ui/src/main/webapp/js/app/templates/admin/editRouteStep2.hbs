@@ -2,22 +2,45 @@
     <div class="content_header" style="background-color: gray;">
         <h3>添加发车时间</h3>
     </div>
-    <form>
-        <div class="content_header">
-            生效日期A1
+    <div style="padding: 0 10px">
+    {{#each timeRanges}}
+        <div class="timeRange" id="{{@index}}">
+            <div class="content_header">
+                生效日期{{sum @index 1}}
+                {{#unless @first}}
+                <div class="del_button" id="{{@index}}">
+                    删除
+                </div>
+                {{/unless}}
+            </div>
+            <div data-role="fieldcontain">
+                <label for="start_date">生效日期:</label>
+                <input type="date" name="startTime" id="start_time" value="{{startTime}}" placeholder="生效日期">
+                <label for="end_date">截止日期:</label>
+                <input type="date" name="endTime" id="end_time" value="{{endTime}}" placeholder="截止日期">
+                <label for="start_times">发车时间:</label>
+                <textarea name="startPoints" id="start_points" placeholder="格式:0720 0740 用空格号分隔">{{startPoints}}</textarea>
+                <label for="weekend_on">周末是否发车:</label>
+                <input type="checkbox" data-role="flipswitch" onchange="{{weekend}}" {{#if weekend}}checked=""{{/if}} name="weekend" id="weekend" data-on-text="是" data-off-text="否"/>
+            </div>
+            <div>
+                <div class="btn_save_time_range bus_btn bus_left" data-id="{{@index}}" style="width: 49%;"> 保存 </div>
+                <div class="bus_left" style="width:2%; height:40px; float:left"></div>
+                <div class="btn_edit_vehicles bus_btn bus_left" data-id="{{@index}}" style="width: 49%;"> 编辑车辆 </div>
+            </div>
         </div>
-        <div data-role="fieldcontain">
-            <label for="start_date">生效日期:</label>
-            <input type="date" name="startDate" id="start_date"  placeholder="生效日期">
-            <label for="end_date">截止日期:</label>
-            <input type="date" name="endDate" id="end_date"  placeholder="截止日期">
-            <label for="start_times">发车时间:</label>
-            <textarea name="startTimes" id="start_times"  placeholder="格式:0720 0740 中间用空格分开"></textarea>
-            <label for="weekend_on">周末是否发车:</label>
-            <input type="checkbox" data-role="flipswitch" name="weekendOn" id="weekend_on" data-on-text="是" data-off-text="否"/>
+        <div style="width: 100%; height: 50px;"></div>
+    {{else}}
+        <div style="width: 100%; text-align: center; font-size: x-large;">
+            <b>该路线尚未添加时间分支!</b>
         </div>
-    </form>
-    <div class="footer_btn">
-        <a href="">下一步</a>
+    {{/each}}
+        <div class="add_time_range_btn" id="btn_add_time_range">
+            增加时间分支
+        </div>
+        <div style="height: 20px; width: 100%"></div>
+    </div>
+    <div class="footer_btn" id="btn_publish_route">
+        确认发布路线
     </div>
 </div>

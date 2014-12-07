@@ -1,12 +1,19 @@
 package com.bus.services.model;
 
+import com.bus.services.config.cxf.CustomDateSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class TimeRange {
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date startTime;
+    @JsonSerialize(using = CustomDateSerializer.class)
     private Date endTime;
+    private String startPoints;
+    private boolean weekend;
     private List<Vehicle> vehicles;
 
     public List<Vehicle> getVehicles() {
@@ -19,7 +26,6 @@ public class TimeRange {
     public void setVehicles(List<Vehicle> vehicles) {
         this.vehicles = vehicles;
     }
-
     public Date getStartTime() {
         return startTime;
     }
@@ -35,23 +41,20 @@ public class TimeRange {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
-}
 
-//        startTime: '2014.12.01',
-//        endTime: '2014.12.05',
-//        vehicles:[
-//        {
-//        name: '巴士A1',
-//        id  : '京CA0653',
-//        driverName: '陈师傅',
-//        driverPhone: '18888888888',
-//        setoutTime: ['07:20', '08:00', '08:40', 09:20]
-//        },
-//        {
-//        name: '巴士A2',
-//        id  : '京CA0654',
-//        driverName: '李师傅',
-//        driverPhone: '19999999999',
-//        setoutTime: ['07:40', '08:20', '09:00']
-//        }
-//        ]
+    public String getStartPoints() {
+        return startPoints;
+    }
+
+    public void setStartPoints(String startPoints) {
+        this.startPoints = startPoints;
+    }
+
+    public boolean isWeekend() {
+        return weekend;
+    }
+
+    public void setWeekend(boolean weekend) {
+        this.weekend = weekend;
+    }
+}

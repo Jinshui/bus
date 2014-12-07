@@ -7,8 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document
+@Document(collection = Route.MONGO_COLLECTION)
 public class Route extends BaseMongoPersistent<Route> {
+    public final static String MONGO_COLLECTION = "Routes";
     @Indexed
     private String name;
     private Integer price;
@@ -18,6 +19,7 @@ public class Route extends BaseMongoPersistent<Route> {
     private String middleStations;
     private String mapFileName;
     private List<TimeRange> timeRanges;
+    private boolean published;
 
     public String getName() {
         return name;
@@ -84,5 +86,13 @@ public class Route extends BaseMongoPersistent<Route> {
 
     public void setTimeRanges(List<TimeRange> timeRanges) {
         this.timeRanges = timeRanges;
+    }
+
+    public boolean isPublished(){
+        return published;
+    }
+
+    public void setPublished(boolean published){
+        this.published = published;
     }
 }
