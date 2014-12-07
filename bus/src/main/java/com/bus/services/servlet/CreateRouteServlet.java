@@ -1,4 +1,4 @@
-package com.bus.services.servlets;
+package com.bus.services.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <script src="js/gen/lib.js"></script>
+    <script src="js/gen/app.js"></script>
+    <script src="js/gen/template.js"></script>
+</head>
+
+<body>
+<div data-role="page">
+    <div data-role="header">
+        <h1>文本输入</h1>
+    </div>
+
+    <div data-role="content">
+        <div data-role="fieldcontain">
+            <label for="route_name">路线名称：</label>
+            <input type="text" name="route_name" id="route_name" placeholder="请输入路线名称">
+            <label for="route_map">路线地图(选填)：</label>
+            <input type="file" name="route_map" id="route_map">
+            <label for="route_price">票价:</label>
+            <input type="number" name="route_price" id="route_price" placeholder="人民币">
+        </div>
+        <input type="submit" data-inline="true" value="提交">
+    </div>
+</div>
+
+</body>
+</html>

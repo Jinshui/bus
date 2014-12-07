@@ -1,0 +1,49 @@
+<div data-role="content" style="padding: 0">
+    <div class="content_header" style="background-color: gray;">
+        <h3>添加车辆:</h3>
+    </div>
+    <div style="padding: 0 10px">
+        {{#each vehicles}}
+            <div class="vehicle" id="{{@index}}">
+                <div class="content_header">
+                    车辆{{sum @index 1}}
+                    <div class="del_button" id="{{@index}}">
+                        删除
+                    </div>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="name">名称:</label>
+                    <input type="text" name="name" id="name" value="{{name}}" placeholder="车辆名称">
+                    <label for="seat_count">座位数:</label>
+                    <input type="number" name="seatCount" id="seat_count" value="{{seatCount}}" placeholder="准乘人数">
+                    <label for="license_tag">车牌号:</label>
+                    <input type="text" name="licenseTag" id="license_tag" value="{{licenseTag}}" placeholder="车牌号">
+                    <label for="driver_name">司机:</label>
+                    <input type="text" name="driverName" id="driver_name" value="{{driverName}}" placeholder="司机姓名">
+                    <label for="driver_contact">电话:</label>
+                    <input type="number" name="driverContact" id="driver_contact" value="{{driverContact}}" placeholder="司机电话">
+                    <label for="company">公司:</label>
+                    <input type="text" name="company" id="company" value="{{company}}" placeholder="公司名称">
+                    <label style="width:100%">发车时间选择(多选):</label>
+                    <div class="ui-grid-c" style="width:100%">
+                    {{#each startPointsArray}}
+                        {{#conditionalDiv @index}}
+                            <label for="{{@../index}}-{{@index}}" style="text-align:center;">{{formatTime this}}</label>
+                            <input type="radio" name="time-{{@index}}" value="{{formatTime this}}" id="{{@../index}}-{{@index}}" data-mini="true">
+                        {{/conditionalDiv}}
+                    {{/each}}
+                    </div>
+                </div>
+            </div>
+        {{else}}
+            <div style="width: 100%; text-align: center; font-size: x-large;">
+                <b>该时间段内尚未添加车辆!</b>
+            </div>
+        {{/each}}
+        <div class="add_time_range_btn" id="btn_add_vehicle"> 增加车辆 </div>
+        <div style="height: 20px; width: 100%"></div>
+    </div>
+    <div class="footer_btn" id="btn_complete">
+        车辆添加完成
+    </div>
+</div>

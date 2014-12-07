@@ -1,0 +1,101 @@
+
+.content_header{
+    background-color: darkgray;
+    height: 40px;
+    padding-left: 10px;
+    line-height: 40px;
+}
+
+.bus_btn{
+    background-color: green;
+    color:#ffffff;
+    width:80px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    text-shadow: none;
+}
+
+.bus_btn:hover{
+    background-color: darkgreen;
+    color:#bbbbbb;
+    cursor: pointer;
+}
+
+.bus_light{
+    float: right;
+}
+.bus_left{
+    float: left;
+}
+
+.edit_button{
+    background-color: green;
+    float: right;
+    width:80px;
+    height: 40px;
+    color:#ffffff;
+    text-shadow: none;
+    text-align: center;
+}
+.edit_button:hover{
+    background-color: darkgreen;
+    color:#bbbbbb;
+    cursor: pointer;
+}
+
+.add_time_range_btn{
+    background-color: greenyellow;
+    height: 45px;
+    text-align: center;
+    line-height: 45px;
+    color:#ffffff;
+    text-shadow: none;
+    font-size: larger;
+}
+.add_time_range_btn:hover{
+    background-color: yellowgreen;
+    color:#bbbbbb;
+    cursor: pointer;
+}
+
+.del_button{
+    background-color: red;
+    float: right;
+    width:80px;
+    height: 40px;
+    text-align: center;
+}
+.del_button:hover{
+    background-color: darkred;
+    color:#bbbbbb;
+    cursor: pointer;
+}
+.text_panel{
+    padding: 10px;
+}
+.route_date_info{
+    padding-left: 10px;
+    background-color: darkgray;
+}
+.footer_btn{
+    background-color: green;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    color:#ffffff;
+    text-shadow: none;
+    font-size: larger;
+}
+.footer_btn:hover{
+    background-color: darkgreen;
+    color:#bbbbbb;
+    cursor: pointer;
+}
+h3{
+    margin: 0;
+    float: left;
+}
+a, a:hover{
+    TEXT-DECORATION:none
+}

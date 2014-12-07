@@ -6,7 +6,7 @@
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>services</artifactId>
+    <artifactId>bus</artifactId>
     <packaging>war</packaging>
     <name>Bus - Services</name>
 
@@ -205,5 +205,28 @@
                 </excludes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>pl.allegro</groupId>
+                <artifactId>grunt-maven-plugin</artifactId>
+                <version>${grunt-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>grunt</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>create-resources</goal>
+                            <goal>npm</goal>
+                            <goal>grunt</goal>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.sortpom</groupId>
+                <artifactId>maven-sortpom-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

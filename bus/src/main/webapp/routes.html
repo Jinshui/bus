@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="css/bus.css"/>
+    <script src="js/gen/lib.js"></script>
+    <script src="js/gen/app.js"></script>
+    <script src="js/gen/template.js"></script>
+    <script>
+        Handlebars.registerHelper('conditionalDiv', function(divisor, options) {
+            var _class = "";
+            if(divisor%4 == 0){
+                _class = "ui-block-a";
+            }else if(divisor%4 == 1){
+                _class = "ui-block-b";
+            }else if(divisor%4 == 2){
+                _class = "ui-block-c";
+            }else if(divisor%4 == 3){
+                _class = "ui-block-d";
+            }
+            return '<div class="' + _class + '">' + options.fn(this) + '</div>';
+        });
+
+        Handlebars.registerHelper('formatTime', function(time) {
+            if(/^[0-9]{4}$/.test(time)){
+                return time.substring(0, 2) + ":" + time.substring(2, 4);
+            }
+        });
+
+        Handlebars.registerHelper('sum', function(num1, num2) {
+            return num1 + num2;
+        });
+
+        $(document).on("pageinit","#all_routes",function(){
+            transitionToRoutesPage();
+        });
+
+        function showLoading(message){
+
+        }
+
+        function transitionToRoutesPage(){
+            $.ajax({
+                type: 'GET',
+                url: "/bus/services/routes"
+            }).done(function( data, textStatus, jqXHR ){
+                showRoutesPage(data);
+            }).fail(function( jqXHR, textStatus, errorThrown ) {
+                //TODO: Failure
+            });
+        }
+
+        function showRoutesPage(data){
+            showPage('all_routes', 'admin/routes', {routes:data});
+            $('.edit_button').on('click', function(event){
+                var route = data[event.target.id];
+                showEditRoutePage(route);
+            });
+            $("#btn_add_route").on('click', function(){
+                showEditRoutePage({});
+            });
+        }
+
+        function showEditRoutePage(route){
+            showPage('edit_route', 'admin/editRoute', route);
+            var upload_data = null;
+            $('#route_map').fileupload({
+                autoUpload : false,
+                replaceFileInput : false,
+                add: function (e, data) {
+                    upload_data = data;
+                }
+            });
+            $("#btn_delete_route").on('click', function(){
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/bus/services/routes/" + route.id,
+                    crossDomain: true
+                }).done(function( data, textStatus, jqXHR ){
+                    transitionToRoutesPage();
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    //TODO: Failure
+                });
+            });
+            $("#btn_edit_route_next_step").on('click', function(){
+                route.name = $("#route_name")[0].value;
+                route.price = $("#route_price")[0].value;
+                route.startStation = $("#start_station")[0].value;
+                route.startStationDesc = $("#start_station_desc")[0].value;
+                route.endStation = $("#end_station")[0].value;
+                route.middleStations = $("#middle_stations")[0].value;
+                var url = "/bus/services/routes";
+                if(upload_data){
+                    upload_data.url = url;
+                    upload_data.formData = {data: JSON.stringify(route)};
+                    upload_data.contentType = "multipart/form-data; charset=utf-8";
+                    $('#route_map').fileupload('send', upload_data).done(function(data, textStatus, jqXHR){
+                        upload_data = null;
+                        showEditRouteStep2(data);
+                    }).fail(function(jqXHR, textStatus, errorThrown){
+                        //TODO: handle failures
+                    });
+                }else{
+                    $.ajax({
+                        type: 'PUT',
+                        url: url,
+                        data: JSON.stringify(route),
+                        contentType: "application/json; charset=utf-8",
+                        processData : false
+                    }).done(function( data, textStatus, jqXHR ){
+                        showEditRouteStep2(data);
+                    }).fail(function( jqXHR, textStatus, errorThrown ) {
+                        //TODO: handle failures
+                    });
+                }
+            });
+        }
+
+        function showEditRouteStep2(route){
+            showPage('edit_route_step2', 'admin/editRouteStep2', route);
+
+            $("#btn_add_time_range").on('click', function(){
+                var timeRange = {
+                    startTime: null,
+                    endTime: null,
+                    startPoints: null,
+                    weekend: false
+                };
+                if(!route.timeRanges)
+                    route.timeRanges = [];
+                route.timeRanges.push(timeRange);
+                showEditRouteStep2(route);
+            });
+
+            $(".del_button").on('click', function(event){
+                route.timeRanges.splice(event.target.id, 1);
+                showEditRouteStep2(route);
+            });
+
+            $('.btn_save_time_range').on('click', function(event){
+                var id = $(event.target).attr('data-id');
+                var route_timeRange = route.timeRanges[id];
+                var ele_timeRange = $(event.target).closest('.timeRange');
+                route_timeRange.startTime = ele_timeRange.find('#start_time')[0].value;
+                route_timeRange.endTime = ele_timeRange.find('#end_time')[0].value;
+                route_timeRange.startPoints = ele_timeRange.find('#start_points')[0].value;
+                route_timeRange.weekend = ele_timeRange.find('#weekend')[0].checked;
+            });
+
+            $('.btn_edit_vehicles').on('click', function(event){
+                var id = $(event.target).attr('data-id');
+                var route_timeRange = route.timeRanges[id];
+                //Tricky start
+                if(route_timeRange.vehicles){
+                    route_timeRange.vehicles.forEach(function(vehicle){
+                        vehicle.startPointsArray = [];
+                        var startPointsArray = route_timeRange.startPoints.split(' ');
+                        if(startPointsArray){
+                            startPointsArray.forEach(function(item){
+                                if(item.length > 1){
+                                    vehicle.startPointsArray.push(item);
+                                }
+                            });
+                        }
+                    });
+                }
+                //Tricky end
+                showEditRouteStep3(route, route_timeRange);
+            });
+
+            var url = "/bus/services/routes";
+            $('#btn_publish_route').on('click', function(event){
+                route.published = true;
+                $.ajax({
+                    type: 'PUT',
+                    url: url,
+                    data: JSON.stringify(route),
+                    contentType: "application/json",
+                    processData : false
+                }).done(function( data, textStatus, jqXHR ){
+                    transitionToRoutesPage();
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    //TODO: handle failures
+                });
+            });
+        }//0720 0740 0800 0820 0840 0900 0920 0940 1000
+
+        function showEditRouteStep3(route, route_timeRange){
+            showPage('edit_route_step3', 'admin/editRouteStep3', route_timeRange);
+            //initialize checked startpoints
+            var vehiclesElements = $(".vehicle");
+            for(var i=0; i<vehiclesElements.length; i++){
+                var element = vehiclesElements[i];
+                var vehicleId = element.id;
+                var vehicle = route_timeRange.vehicles[vehicleId];
+                if(!vehicle.startPoints)
+                    continue;
+                var radioElements = $(element).find(':radio');
+                for(var j=0; j<radioElements.length; j++){
+                    var timeRadio = radioElements[j];
+                    vehicle.startPoints.forEach(function(startPoint){
+                        if(startPoint == timeRadio.value){
+                            $(timeRadio).attr("checked", true).checkboxradio("refresh");
+                        }
+                    })
+                }
+            }
+
+            var saveVehicles = function(){
+                var vehiclesElements = $(".vehicle");
+                for(var i=0; i<vehiclesElements.length; i++){
+                    var element = vehiclesElements[i];
+                    var vehicleId = element.id;
+                    var vehicle = route_timeRange.vehicles[vehicleId];
+                    vehicle.name = $(element).find('#name')[0].value;
+                    vehicle.seatCount = $(element).find('#seat_count')[0].value;
+                    vehicle.licenseTag = $(element).find('#license_tag')[0].value;
+                    vehicle.driverName = $(element).find('#driver_name')[0].value;
+                    vehicle.driverContact = $(element).find('#driver_contact')[0].value;
+                    vehicle.company = $(element).find('#company')[0].value;
+                    var startPoints = [];
+                    var radioElements = $(element).find(':radio');
+                    for(var j=0; j<radioElements.length; j++){
+                        var timeRadio = radioElements[j];
+                        if(timeRadio.checked){
+                            startPoints.push(timeRadio.value);
+                        }
+                    }
+                    vehicle.startPoints = startPoints;
+                }
+            };
+
+            $(':radio').on('click', function(event){
+                if($(event.target).attr('checked') === 'checked')
+                    $(event.target).attr("checked", false);
+                else
+                    $(event.target).attr("checked", 'checked');
+            });
+
+            $("#btn_add_vehicle").on('click', function(){
+                var vehicle = {
+                    name: null,
+                    seatCount: null,
+                    licenseTag: null,
+                    driverName: null,
+                    company: null,
+                    driverContact: null
+                };
+                if(!route_timeRange.vehicles)
+                    route_timeRange.vehicles = [];
+                vehicle.startPointsArray = [];
+                var startPointsArray = route_timeRange.startPoints.split(' ');
+                if(startPointsArray){
+                    startPointsArray.forEach(function(item){
+                        ///^[0-9]{4}$/.test('0720')
+                        if(item.length > 1){
+                            vehicle.startPointsArray.push(item);
+                        }
+                    });
+                }
+                saveVehicles();
+                route_timeRange.vehicles.push(vehicle);
+                showEditRouteStep3(route, route_timeRange);
+            });
+
+            $(".del_button").on('click', function(event){
+                saveVehicles();
+                route_timeRange.vehicles.splice(event.target.id, 1);
+                showEditRouteStep3(route, route_timeRange);
+            });
+
+            $("#btn_complete").on('click', function(event){
+                saveVehicles();
+                showEditRouteStep2(route);
+            });
+        }
+
+        function showPage(targetId, templateName,  data){
+            var page = $("#"+targetId);
+            var template = Bus[templateName];
+            var content = template(data);
+            page.html(content);
+            $.mobile.changePage("#"+targetId, { transition: "fade" });
+            page.enhanceWithin();
+        }
+    </script>
+</head>
+
+<body>
+    <div data-role="page" id="all_routes">
+    </div>
+    <div data-role="page" id="edit_route">
+    </div>
+    <div data-role="page" id="edit_route_step2">
+    </div>
+    <div data-role="page" id="edit_route_step3">
+    </div>
+</body>
+</html>
