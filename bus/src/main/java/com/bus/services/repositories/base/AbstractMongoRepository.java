@@ -166,6 +166,10 @@ public abstract class AbstractMongoRepository<T extends MongoPersistent> impleme
 
     // internals
 
+    protected List<T> findByCriteria(Criteria criteria){
+        return getMongoTemplate().find(query(criteria), getClazz());
+    }
+
     /**
      * Find a page worth of items.
      * @param criteria The base criteria

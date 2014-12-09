@@ -22,7 +22,7 @@
                 {{#each vehicles}}
                     <b>{{name}}:</b><br>
                     {{licenseTag}}&nbsp;{{driverName}}&nbsp;{{driverContact}}<br>
-                    发车时间: {{#each startPoints}}{{this}}, {{/each}}
+                    发车时间: {{#each startPoints}}{{formatTime this}}, {{/each}}
                     <hr>
                 {{/each}}
             </div>

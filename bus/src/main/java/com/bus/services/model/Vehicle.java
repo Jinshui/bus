@@ -1,33 +1,44 @@
 package com.bus.services.model;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.annotation.Transient;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bus.services.model.ReservationMgmt.ReservationStat;
+
 public class Vehicle {
     private String name;
-    private int seatCount;
+    private Integer seatCount;
     private String licenseTag;
     private String driverName;
     private String driverContact;
     private String company;
-    private List<String> startPoints;
+    private List<Integer> startPoints;
 
-    public List<String> getStartPoints() {
+    //The following fields are used for reservation management only
+    @Transient
+    private List<ReservationStat> reservationStats; //reserved seats for each start points -- for admin page
+    @Transient
+    private List<Integer> availableSeats; //available seats for each start points -- for user page
+
+    public List<Integer> getStartPoints() {
         if(startPoints == null){
             startPoints = new ArrayList<>();
         }
         return startPoints;
     }
 
-    public void setStartPoints(List<String> startPoints) {
+    public void setStartPoints(List<Integer> startPoints) {
         this.startPoints = startPoints;
     }
 
-    public int getSeatCount(){
+    public Integer getSeatCount(){
         return seatCount;
     }
 
-    public void setSeatCount(int seatCount){
+    public void setSeatCount(Integer seatCount){
         this.seatCount = seatCount;
     }
 
@@ -69,5 +80,24 @@ public class Vehicle {
 
     public void setDriverContact(String driverContact) {
         this.driverContact = driverContact;
+    }
+
+    public List<ReservationStat> getReservationStats(){
+        return reservationStats;
+    }
+
+    public void setReservationStats(List<ReservationStat> reservationStats) {
+        this.reservationStats = reservationStats;
+    }
+
+    public List<Integer> getAvailableSeats(){
+        if(availableSeats == null){
+            availableSeats = new ArrayList<>();
+        }
+        return availableSeats;
+    }
+
+    public void setAvailableSeats(List<Integer> availableSeats){
+        this.availableSeats = availableSeats;
     }
 }

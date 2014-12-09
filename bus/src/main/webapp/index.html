@@ -1,32 +1,295 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page Title</title>
+    <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="css/bus.css"/>
     <script src="js/gen/lib.js"></script>
-    <script src="js/gen/app.js"></script>
     <script src="js/gen/template.js"></script>
+    <script>
+        Handlebars.registerHelper('conditionalDiv', function(divisor, options) {
+            var _class = "";
+            if(divisor%4 == 0){
+                _class = "ui-block-a";
+            }else if(divisor%4 == 1){
+                _class = "ui-block-b";
+            }else if(divisor%4 == 2){
+                _class = "ui-block-c";
+            }else if(divisor%4 == 3){
+                _class = "ui-block-d";
+            }
+            return '<div class="' + _class + '">' + options.fn(this) + '</div>';
+        });
+
+        Handlebars.registerHelper('printDateInChinese', function(date) {
+            return formatInChineseWeek(date);
+        });
+        Handlebars.registerHelper('printDateInYYYYMMDD', function(date) {
+            return getYyyyMMdd(date);
+        });
+        //format time from HHmm to HH:mm
+        Handlebars.registerHelper('formatTime', function(time) {
+            return formatTime(time);
+        });
+
+        $(document).on("pageinit","#route_detail",function(){
+            var url = window.location.href;
+            var urlArray = url.split('?');
+            if(urlArray.length == 2){
+                var params = urlArray[1].split('=');
+                if(params.length == 2 && params[0] === 'id'){
+                    var id = params[1];
+                    transitionToRoutePage(id);
+                    return;
+                }
+            }
+            transitionToRouteListPage();
+        });
+
+        function transitionToRouteListPage(){
+            alert('Not implemented yet, coming soon...');
+        }
+
+        function transitionToRoutePage(id){
+            $.ajax({
+                type: 'GET',
+                url: "/bus/services/routes/" + id + "?date1="+getYyyyMMdd(new Date())+"&date2="+getYyyyMMdd(add(new Date(), 3))
+            }).done(function( data, textStatus, jqXHR ){
+                showRouteDetailPage(data);
+            }).fail(function( jqXHR, textStatus, errorThrown ) {
+                //TODO: Failure
+            });
+        }
+
+        function showRouteDetailPage(data){
+            var availableTimeRange;
+            if(data.timeRanges){
+                var availableDay = new Date();
+
+                if( availableDay.getDay() <= 4 && availableDay >= 1){ //Monday --> Thursday
+                    data.timeRanges.forEach(function(timeRange){
+                        if( Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
+                                between(availableDay, timeRange.startTime, timeRange.endTime) ){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                        data.timeRanges.forEach(function(timeRange){
+                            if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
+                                availableTimeRange  =  timeRange;
+                            }
+                        });
+                    }
+                }else if(availableDay.getDay() == 5){ //Friday
+                    data.timeRanges.forEach(function(timeRange){ //Friday
+                        if( Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
+                                between(availableDay, timeRange.startTime, timeRange.endTime) ){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                    }
+                    data.timeRanges.forEach(function(timeRange){ //Saturday
+                        if(between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                    }
+                    data.timeRanges.forEach(function(timeRange){ //Sunday
+                        if(between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                    }
+                    data.timeRanges.forEach(function(timeRange){ //Monday
+                        if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                }else if(availableDay.getDay() == 6){//Saturday
+                    data.timeRanges.forEach(function(timeRange){ //Saturday
+                        if(Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
+                                between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                    }
+                    data.timeRanges.forEach(function(timeRange){ //Sunday
+                        if(between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                    }
+                    data.timeRanges.forEach(function(timeRange){ //Monday
+                        if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                }else if(availableDay.getDay() == 0){//Sunday
+                    data.timeRanges.forEach(function(timeRange){ //Sunday
+                        if(Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
+                                between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                    if(!availableTimeRange){
+                        availableDay = add(availableDay, 1);
+                    }
+                    data.timeRanges.forEach(function(timeRange){ //Monday
+                        if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
+                            availableTimeRange  =  timeRange;
+                        }
+                    });
+                }
+
+                if(availableTimeRange && availableTimeRange.startPoints){
+                    data.availableDay = availableDay;
+                    data.availableStartPointsArray = [];
+                    var _startPointsArray = availableTimeRange.startPoints.split(' ');
+                    if(_startPointsArray){
+                        var today = new Date();
+                        _startPointsArray.forEach(function(item){
+                            if( availableDay.getDay() != today.getDay() || Number(getHHmm(today)) < Number(item)){
+                                data.availableStartPointsArray.push(item);
+                            }
+                        });
+                    }
+                }
+            }
+
+            showPage('route_detail', 'user/showRouteDetails', data);
+
+            var findSelectedVehicle = function(selectedStartPoint){
+                var selectedVehicle = null;
+                if(availableTimeRange.vehicles){
+                    availableTimeRange.vehicles.some(function(vehicle){
+                        if(vehicle.startPoints){
+                            vehicle.startPoints.some(function(startPoint){
+                                if(startPoint == selectedStartPoint){
+                                    selectedVehicle = vehicle;
+                                }
+                                return selectedVehicle;
+                            });
+                        }
+                        return selectedVehicle;
+                    });
+                }
+                return selectedVehicle;
+            };
+
+            var generateBusInfo = function(vehicle, time){
+                if(vehicle){
+                    return formatInChineseWeek(data.availableDay) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.seatCount + '个座位。<br>' +
+                            '车牌 ' + vehicle.licenseTag + ' ' + vehicle.driverName + ' ' + vehicle.driverContact + '。<br>' +
+                            '票价' + data.price + '元 由' + vehicle.company + '提供服务。';
+                }else{
+                    return "请选择您的出发时间"
+                }
+            };
+
+            var radioElements = $(":radio");
+            if(radioElements.length > 0){
+                $(radioElements[0]).attr("checked", true).checkboxradio("refresh");
+                var defaultSelectedVehicle = findSelectedVehicle(Number(radioElements[0].value));
+                $('#bus_status').html(generateBusInfo(defaultSelectedVehicle, radioElements[0].value));
+                radioElements.on('click', function(event){
+                    var selectedVehicle = findSelectedVehicle(Number(event.target.value));
+                    $('#bus_status').html(generateBusInfo(selectedVehicle, event.target.value));
+                });
+            }
+
+            $('.btn_submit').on('click', function(event){
+                var userPhone = $('#user_phone')[0].value;
+                var userName = $('#user_name')[0].value;
+                var route = data[event.target.id];
+            });
+        }
+
+        function showPage(pageId, templateName,  data){
+            var page = $("#"+pageId);
+            var template = Bus[templateName];
+            var content = template(data);
+            page.html(content);
+            $.mobile.changePage("#"+pageId, { transition: "fade" });
+            page.enhanceWithin();
+        }
+
+        //Some date utility functions
+        function between(date, strDate1, strDate2){
+            return date.getTime() <= Date.parse(strDate2) && date.getTime() >= Date.parse(strDate1);
+        }
+
+        var week = ['\u65e5','\u4e00','\u4e8c','\u4e09','\u56db','\u4e94','\u516d'];
+        //return string like '11月24日 星期一'
+        function formatInChineseWeek(date){
+            var result = "";
+            result = result + (date.getMonth()+1) + '\u6708';
+            result = result + date.getDate() + '\u65e5';
+            result = result + ' \u661f\u671f' + week[date.getDay()];
+            return result;
+        }
+
+        //format time from HHmm to HH:mm
+        function formatTime(time){
+            var strTime = '' + time;
+            if(/^[0-9]{4}$/.test(strTime)){
+                return strTime.substring(0, 2) + ":" + strTime.substring(2, 4);
+            }
+            if(/^[0-9]{3}$/.test(strTime)){
+                return strTime.substring(0, 1) + ":" + strTime.substring(1, 3);
+            }
+        }
+
+        function add(date, daysToAdd){
+            date.setTime(date.getTime() + (daysToAdd * 24 * 60 * 60 * 1000));
+            return date;
+        }
+
+        function nextMonday(date){
+            if(!date){
+                date = new Date();
+            }
+            while(date.getDay() != 1){
+                date = add(date, 1);
+            }
+            return date;
+        }
+
+        function getHHmm(date){
+            if(date){
+                return prefixZero(date.getHours()) + prefixZero(date.getMinutes());
+            }
+        }
+
+        function getYyyyMMdd(date){
+            if(date){
+                return "" + date.getFullYear() + prefixZero((date.getMonth() + 1)) + prefixZero(date.getDate());
+            }
+        }
+
+        function prefixZero(num){
+            if(num < 10){
+                return '0' + num;
+            }else{
+                return num;
+            }
+        }
+
+    </script>
 </head>
-
 <body>
-<div data-role="page">
-    <div data-role="header">
-        <h1>文本输入</h1>
+    <div data-role="page" id="route_detail">
     </div>
-
-    <div data-role="content">
-        <div data-role="fieldcontain">
-            <label for="route_name">路线名称：</label>
-            <input type="text" name="route_name" id="route_name" placeholder="请输入路线名称">
-            <label for="route_map">路线地图(选填)：</label>
-            <input type="file" name="route_map" id="route_map">
-            <label for="route_price">票价:</label>
-            <input type="number" name="route_price" id="route_price" placeholder="人民币">
-        </div>
-        <input type="submit" data-inline="true" value="提交">
-    </div>
-</div>
-
 </body>
 </html>

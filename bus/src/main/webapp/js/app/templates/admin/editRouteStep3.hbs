@@ -29,7 +29,7 @@
                     {{#each startPointsArray}}
                         {{#conditionalDiv @index}}
                             <label for="{{@../index}}-{{@index}}" style="text-align:center;">{{formatTime this}}</label>
-                            <input type="radio" name="time-{{@index}}" value="{{formatTime this}}" id="{{@../index}}-{{@index}}" data-mini="true">
+                            <input type="radio" name="time-{{@index}}" value="{{this}}" id="{{@../index}}-{{@index}}" data-mini="true">
                         {{/conditionalDiv}}
                     {{/each}}
                     </div>

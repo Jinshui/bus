@@ -1,0 +1,38 @@
+<div data-role="content" style="padding: 10px ">
+    <div>
+        <strong style="color:green">{{name}}:</strong> <br>
+        {{startStation}}  <span style="color:green">开往</span>  {{endStation}}<br>
+        <div style="height:5px"></div>
+        <b>途经:</b> {{middleStations}}
+    </div>
+    <div style="height:5px"></div>
+    <div>
+        {{#if availableStartPointsArray}}
+            <strong>请选择乘车时间:</strong><br>
+            <div style="height:5px"></div>
+            <b>{{printDateInChinese availableDay}}</b><br>
+            <div class="ui-grid-c" style="width:100%">
+                {{#each availableStartPointsArray}}
+                    {{#conditionalDiv @index}}
+                        <label for="{{this}}" style="text-align:center;">{{formatTime this}}</label>
+                        <input type="radio" name="firstDay" value="{{this}}" id="{{this}}" data-mini="true">
+                    {{/conditionalDiv}}
+                {{/each}}
+            </div>
+            <div style="border:1px dashed green; color:green; padding: 8px" id="bus_status">
+            </div>
+            <div style="height:10px"></div>
+            <label for="user_phone">请留下您的联系方式,以便司机与您联系:</label>
+            <input type="text" name="userPhone" id="user_phone" placeholder="您的联系电话">
+            <label for="user_name">您怎么称呼?</label>
+            <input type="text" name="userName" id="user_name" placeholder="您的姓名">
+            <label for="route_map">路线地图:</label>
+        {{else}}
+            <strong>抱歉, 车辆已满员,请选择其他路线!</strong><br>
+        {{/if}}
+        <img src="images/route_1.png" id="route_map" style="width: 100%;">
+    </div>
+    <div class="footer_btn" id="btn_submit">
+        预约巴士
+    </div>
+</div>

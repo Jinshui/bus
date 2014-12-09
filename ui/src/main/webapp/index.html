@@ -1,32 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page Title</title>
+    <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="css/bus.css"/>
     <script src="js/gen/lib.js"></script>
-    <script src="js/gen/app.js"></script>
-    <script src="js/gen/template.js"></script>
+    <style>
+        .time_btn_left{
+            background-color:darkgrey;
+            height:30px;
+            margin-left:5px;
+            margin-right:5px;
+            line-height: 30px;
+            text-align:center;
+        }
+        .time_btn_center{
+            background-color:darkgrey;
+            height:30px;
+            margin-right:5px;
+            line-height: 30px;
+            text-align:center;
+        }
+        .time_btn_right{
+            background-color:darkgrey;
+            height:30px;
+            margin-right:5px;
+            line-height: 30px;
+            text-align:center;
+        }
+        .time_label{
+            text-align:center;
+        }
+    </style>
 </head>
-
 <body>
-<div data-role="page">
-    <div data-role="header">
-        <h1>文本输入</h1>
-    </div>
-
-    <div data-role="content">
-        <div data-role="fieldcontain">
-            <label for="route_name">路线名称：</label>
-            <input type="text" name="route_name" id="route_name" placeholder="请输入路线名称">
-            <label for="route_map">路线地图(选填)：</label>
-            <input type="file" name="route_map" id="route_map">
-            <label for="route_price">票价:</label>
-            <input type="number" name="route_price" id="route_price" placeholder="人民币">
+<div data-role="page" id="admin_routes">
+    <div data-role="content" style="padding: 0">
+        <div style="background-color:darkgrey">
+            <strong style="color:green">望京西S1线:</strong> <br>
+            望京西站  <span style="color:green">开往</span>  望京soho<br>
+            <b>途经:</b> 福码大厦, 竹藤大厦, 望京西区四区, 大西洋新城, 花家地西里
         </div>
-        <input type="submit" data-inline="true" value="提交">
+        <div style="padding: 5px">
+            <strong>请选择乘车时间:</strong><br>
+            <b>11月24日星期一</b><br>
+            <div class="ui-grid-c">
+                <div class="ui-block-a">
+                    <label for="time-1" style="text-align:center;">07:20</label>
+                    <input type="radio" name="timeRadio" value="07:20" id="time-1" data-mini="true">
+                </div>
+                <div class="ui-block-b">
+                    <label for="time-2" style="text-align:center;">07:40</label>
+                    <input type="radio" name="timeRadio" value="07:40" id="time-2" data-mini="true">
+                </div>
+                <div class="ui-block-c">
+                    <label for="time-3" style="text-align:center;">08:00</label>
+                    <input type="radio" name="timeRadio" value="08:00" id="time-3" data-mini="true">
+                </div>
+                <div class="ui-block-d">
+                    <label for="time-4" style="text-align:center;">08:20</label>
+                    <input type="radio" name="timeRadio" value="08:20" id="time-4" data-mini="true">
+                </div>
+                <div class="ui-block-a">
+                    <label for="time-5" style="text-align:center;">08:40</label>
+                    <input type="radio" name="timeRadio" value="08:40" id="time-5" data-mini="true">
+                </div>
+                <div class="ui-block-b">
+                    <label for="time-6" style="text-align:center;">09:00</label>
+                    <input type="radio" name="timeRadio" value="07:40" id="time-6" data-mini="true">
+                </div>
+                <div class="ui-block-c">
+                    <label for="time-7" style="text-align:center;">09:20</label>
+                    <input type="radio" name="timeRadio" value="08:00" id="time-7" data-mini="true">
+                </div>
+                <div class="ui-block-d">
+                    <label for="time-8" style="text-align:center;">09:40</label>
+                    <input type="radio" name="timeRadio" value="08:20" id="time-8" data-mini="true">
+                </div>
+            </div>
+            <b>11月25日星期二</b><br>
+            <div class="ui-grid-c">
+                <div class="ui-block-a">
+                    <label for="time-11" style="text-align:center;">07:20</label>
+                    <input type="radio" name="timeRadio" value="07:20" id="time-11" data-mini="true">
+                </div>
+                <div class="ui-block-b">
+                    <label for="time-12" style="text-align:center;">07:40</label>
+                    <input type="radio" name="timeRadio" value="07:40" id="time-12" data-mini="true">
+                </div>
+                <div class="ui-block-c">
+                    <label for="time-13" style="text-align:center;">08:00</label>
+                    <input type="radio" name="timeRadio" value="08:00" id="time-13" data-mini="true">
+                </div>
+                <div class="ui-block-d">
+                    <label for="time-14" style="text-align:center;">08:20</label>
+                    <input type="radio" name="timeRadio" value="08:20" id="time-14" data-mini="true">
+                </div>
+                <div class="ui-block-a">
+                    <label for="time-15" style="text-align:center;">08:40</label>
+                    <input type="radio" name="timeRadio" value="08:40" id="time-15" data-mini="true">
+                </div>
+                <div class="ui-block-b">
+                    <label for="time-16" style="text-align:center;">09:00</label>
+                    <input type="radio" name="timeRadio" value="07:40" id="time-16" data-mini="true">
+                </div>
+                <div class="ui-block-c">
+                    <label for="time-17" style="text-align:center;">09:20</label>
+                    <input type="radio" name="timeRadio" value="08:00" id="time-17" data-mini="true">
+                </div>
+                <div class="ui-block-d">
+                    <label for="time-18" style="text-align:center;">09:40</label>
+                    <input type="radio" name="timeRadio" value="08:20" id="time-18" data-mini="true">
+                </div>
+            </div>
+            <div style="border:1px dashed green; color:green; padding: 8px">
+                11月24日 07:20的巴士剩余15个座位<br>
+                车牌 京A5032 王师傅 18888888888 <br>
+                票价10元 由一起巴士租车公司提供服务
+            </div>
+            <div style="height:10px"></div>
+            <label for="user_phone">请留下您的联系方式,以便司机与您联系:</label>
+            <input type="text" name="userName" id="user_phone" placeholder="您的联系电话">
+            <label for="user_name">您怎么称呼?</label>
+            <input type="text" name="userName" id="user_name" placeholder="您的姓名">
+            <label for="route_map">路线地图:</label>
+            <img src="images/route_1.png" id="route_map" style="width: 100%;">
+        </div>
+        <div class="footer_btn">
+            预约巴士
+        </div>
+        <!--<button style="margin:0; background-color: green; text-align: center;">预约巴士</button>-->
     </div>
 </div>
-
 </body>
 </html>
