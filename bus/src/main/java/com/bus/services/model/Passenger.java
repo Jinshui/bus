@@ -2,7 +2,11 @@ package com.bus.services.model;
 
 import com.bus.services.model.base.BaseMongoPersistent;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = Passenger.MONGO_COLLECTION)
 public class Passenger extends BaseMongoPersistent<Passenger> {
@@ -10,6 +14,8 @@ public class Passenger extends BaseMongoPersistent<Passenger> {
     @Indexed
     private String userName;
     private String phone;
+    @DBRef
+    private List<Reservation> reservations;
 
     public String getPhone() {
         return phone;
@@ -27,6 +33,15 @@ public class Passenger extends BaseMongoPersistent<Passenger> {
         this.userName = userName;
     }
 
+    public List<Reservation> getReservations(){
+        if(reservations == null)
+            reservations = new ArrayList<>();
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations){
+        this.reservations = reservations;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -13,7 +13,9 @@
             乘车地点: {{route.startStationDesc}}
         </div>
         <div style="height:15px"><hr></div>
-        <span style="color:red; font-size: larger">您预约的车辆座位已满,您可以重新预约,或者选择其它时间的车辆.</span>
+        <span style="color:red; font-size: larger">
+            {{error.message}}
+        </span>
     </div>
     <div style="height:20px"></div>
     <div class="div_with_title">
@@ -24,6 +26,6 @@
     </div>
     <div style="height:10px"></div>
 </div>
-<div class="footer_btn" style="position:fixed;bottom:0;width:100%">
+<div class="btn_restore_failed" style="position:fixed;bottom:0;width:100%">
     重新预约
 </div>

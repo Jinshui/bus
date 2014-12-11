@@ -19,6 +19,10 @@ public class Reservation extends BaseMongoPersistent<Reservation> {
     @Indexed
     private Integer date; //an integer representing for a date in yyyyMMdd format, e.g. 2014/12/13 -> 20141213
     private Integer departureTime; //an integer representing for a time in HHmm format, e.g. 10:00 -> 1000, 9:05 --> 905
+//    public static enum Status{
+//        DELETED, NEW, EXPIRED
+//    }
+//    private Status status = Status.NEW;
     @DBRef
     @JsonIgnore
     private List<Passenger> passengers;
@@ -57,6 +61,14 @@ public class Reservation extends BaseMongoPersistent<Reservation> {
     public Integer getDepartureTime() {
         return departureTime;
     }
+
+//    public void setStatus(Status status){
+//        this.status = status;
+//    }
+//
+//    public Status getStatus(){
+//        return status;
+//    }
 
     public void setDepartureTime(Integer departureTime) {
         this.departureTime = departureTime;

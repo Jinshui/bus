@@ -15,7 +15,7 @@ public class Vehicle {
     private String driverName;
     private String driverContact;
     private String company;
-    private List<Integer> startPoints;
+    private List<Integer> startPoints; // HHmm: 07:40 --> 740
 
     //The following fields are used for reservation management only
     @Transient
