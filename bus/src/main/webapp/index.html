@@ -25,9 +25,6 @@
         Handlebars.registerHelper('printDateInChinese', function(date) {
             return formatInChineseWeek(date);
         });
-        Handlebars.registerHelper('printDateInYYYYMMDD', function(date) {
-            return getYyyyMMdd(date);
-        });
         //format time from HHmm to HH:mm
         Handlebars.registerHelper('formatTime', function(time) {
             return formatTime(time);
@@ -54,126 +51,35 @@
         function transitionToRoutePage(id){
             $.ajax({
                 type: 'GET',
-                url: "/bus/services/routes/" + id + "?date1="+getYyyyMMdd(new Date())+"&date2="+getYyyyMMdd(add(new Date(), 3))
-            }).done(function( data, textStatus, jqXHR ){
-                showRouteDetailPage(data);
+                url: "/bus/services/routes/" + id
+            }).done(function( route, textStatus, jqXHR ){
+                showRouteDetailPage(route);
             }).fail(function( jqXHR, textStatus, errorThrown ) {
-                //TODO: Failure
+                //TODO: Failureasdnh
             });
         }
 
-        function showRouteDetailPage(data){
-            var availableTimeRange;
-            if(data.timeRanges){
-                var availableDay = new Date();
-
-                if( availableDay.getDay() <= 4 && availableDay >= 1){ //Monday --> Thursday
-                    data.timeRanges.forEach(function(timeRange){
-                        if( Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
-                                between(availableDay, timeRange.startTime, timeRange.endTime) ){
-                            availableTimeRange  =  timeRange;
+        function showRouteDetailPage(route){
+            if(route && route.timeRanges && route.timeRanges.length > 0){
+                route.availableDay = new Date(route.matchedDate);
+                route.availableStartPointsArray = [];
+                var _startPointsArray = route.timeRanges[0].startPoints.split(' ');
+                if(_startPointsArray){
+                    var today = new Date();
+                    _startPointsArray.forEach(function(item){
+                        if( route.availableDay.getDay() != today.getDay() || Number(getHHmm(today)) < Number(item)){
+                            route.availableStartPointsArray.push(item);
                         }
                     });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                        data.timeRanges.forEach(function(timeRange){
-                            if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
-                                availableTimeRange  =  timeRange;
-                            }
-                        });
-                    }
-                }else if(availableDay.getDay() == 5){ //Friday
-                    data.timeRanges.forEach(function(timeRange){ //Friday
-                        if( Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
-                                between(availableDay, timeRange.startTime, timeRange.endTime) ){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                    }
-                    data.timeRanges.forEach(function(timeRange){ //Saturday
-                        if(between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                    }
-                    data.timeRanges.forEach(function(timeRange){ //Sunday
-                        if(between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                    }
-                    data.timeRanges.forEach(function(timeRange){ //Monday
-                        if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                }else if(availableDay.getDay() == 6){//Saturday
-                    data.timeRanges.forEach(function(timeRange){ //Saturday
-                        if(Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
-                                between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                    }
-                    data.timeRanges.forEach(function(timeRange){ //Sunday
-                        if(between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                    }
-                    data.timeRanges.forEach(function(timeRange){ //Monday
-                        if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                }else if(availableDay.getDay() == 0){//Sunday
-                    data.timeRanges.forEach(function(timeRange){ //Sunday
-                        if(Number(timeRange.startPoints[timeRange.startPoints.length - 1]) > Number(getHHmm(new Date())) &&
-                                between(availableDay, timeRange.startTime, timeRange.endTime) && timeRange.weekend){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                    if(!availableTimeRange){
-                        availableDay = add(availableDay, 1);
-                    }
-                    data.timeRanges.forEach(function(timeRange){ //Monday
-                        if(between(availableDay, timeRange.startTime, timeRange.endTime) ){
-                            availableTimeRange  =  timeRange;
-                        }
-                    });
-                }
-
-                if(availableTimeRange && availableTimeRange.startPoints){
-                    data.availableDay = availableDay;
-                    data.availableStartPointsArray = [];
-                    var _startPointsArray = availableTimeRange.startPoints.split(' ');
-                    if(_startPointsArray){
-                        var today = new Date();
-                        _startPointsArray.forEach(function(item){
-                            if( availableDay.getDay() != today.getDay() || Number(getHHmm(today)) < Number(item)){
-                                data.availableStartPointsArray.push(item);
-                            }
-                        });
-                    }
                 }
             }
 
-            showPage('route_detail', 'user/showRouteDetails', data);
+            showPage('route_detail', 'user/showRouteDetails', route);
 
             var findSelectedVehicle = function(selectedStartPoint){
                 var selectedVehicle = null;
-                if(availableTimeRange.vehicles){
-                    availableTimeRange.vehicles.some(function(vehicle){
+                if(route.timeRanges && route.timeRanges.length > 0 && route.timeRanges[0].vehicles){
+                    route.timeRanges[0].vehicles.some(function(vehicle){
                         if(vehicle.startPoints){
                             vehicle.startPoints.some(function(startPoint){
                                 if(startPoint == selectedStartPoint){
@@ -190,30 +96,72 @@
 
             var generateBusInfo = function(vehicle, time){
                 if(vehicle){
-                    return formatInChineseWeek(data.availableDay) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.seatCount + '个座位。<br>' +
+                    return formatInChineseWeek(route.availableDay) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个座位。<br>' +
                             '车牌 ' + vehicle.licenseTag + ' ' + vehicle.driverName + ' ' + vehicle.driverContact + '。<br>' +
-                            '票价' + data.price + '元 由' + vehicle.company + '提供服务。';
+                            '票价' + route.price + '元 由' + vehicle.company + '提供服务。';
                 }else{
                     return "请选择您的出发时间"
                 }
             };
-
             var radioElements = $(":radio");
+            var selectedTime;
             if(radioElements.length > 0){
                 $(radioElements[0]).attr("checked", true).checkboxradio("refresh");
+                selectedTime = Number(radioElements[0].value);
                 var defaultSelectedVehicle = findSelectedVehicle(Number(radioElements[0].value));
                 $('#bus_status').html(generateBusInfo(defaultSelectedVehicle, radioElements[0].value));
+
                 radioElements.on('click', function(event){
                     var selectedVehicle = findSelectedVehicle(Number(event.target.value));
+                    selectedTime = Number(event.target.value);
                     $('#bus_status').html(generateBusInfo(selectedVehicle, event.target.value));
                 });
             }
 
-            $('.btn_submit').on('click', function(event){
+            $('#btn_submit').on('click', function(event){
                 var userPhone = $('#user_phone')[0].value;
                 var userName = $('#user_name')[0].value;
-                var route = data[event.target.id];
+                var date = getYyyyMMdd(route.availableDay);
+                var routeId = route.id;
+                var openId = 'xxxxxxxx';
+                if(userPhone === '' || userPhone.trim() === ''){
+                    showPage('dialog', 'user/dialog', {header:'请补充信息', message:'请输入您的联系电话.以便于司机在必要时联系您.'}, true);
+                    return;
+                }
+                if(userName === '' || userName.trim() === ''){
+                    showPage('dialog', 'user/dialog', {header:'请补充信息', message:'请输入称呼.以便于司机在必要时联系您.'}, true);
+                    return;
+                }
+                $.ajax({
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    url: "/bus/services/reservations",
+                    data: JSON.stringify({
+                        routeId: routeId,
+                        openId: openId,
+                        userName: userName,
+                        phone: userPhone,
+                        date: date,
+                        time: selectedTime
+                    }),
+                    processData : false
+                }).done(function( reservation, textStatus, jqXHR ){
+                    route.reservationTime = formatTime(selectedTime);
+                    showReservationSucc(route, reservation);
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    route.reservationTime = formatTime(selectedTime);
+                    showReservationFailed(route, jqXHR.responseText);
+                });
             });
+        }
+
+        function showReservationSucc(route, reservation){
+            showPage('reservation_result', 'user/reservationSucc', {route: route, reservation: reservation });
+        }
+
+        function showReservationFailed(route, responseText){
+            var response = JSON.parse(responseText);
+            showPage('reservation_result', 'user/reservationFailed', {route: route, error: response });
         }
 
         function showPage(pageId, templateName,  data){
@@ -251,45 +199,25 @@
             }
         }
 
-        function add(date, daysToAdd){
-            date.setTime(date.getTime() + (daysToAdd * 24 * 60 * 60 * 1000));
-            return date;
-        }
-
-        function nextMonday(date){
-            if(!date){
-                date = new Date();
-            }
-            while(date.getDay() != 1){
-                date = add(date, 1);
-            }
-            return date;
-        }
-
         function getHHmm(date){
             if(date){
-                return prefixZero(date.getHours()) + prefixZero(date.getMinutes());
+                return '' + (date.getHours() * 100 + date.getMinutes());
             }
         }
 
         function getYyyyMMdd(date){
             if(date){
-                return "" + date.getFullYear() + prefixZero((date.getMonth() + 1)) + prefixZero(date.getDate());
+                return  '' + (date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate());
             }
         }
-
-        function prefixZero(num){
-            if(num < 10){
-                return '0' + num;
-            }else{
-                return num;
-            }
-        }
-
     </script>
 </head>
 <body>
     <div data-role="page" id="route_detail">
+    </div>
+    <div data-role="page" id="reservation_result">
+    </div>
+    <div data-role="page" data-dialog="true" data-close-btn="none" id="dialog">
     </div>
 </body>
 </html>

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CompoundIndex(name="reservation_route_date_time", unique=true, def="{route:1, date:1, departureTime:1}")
@@ -28,6 +29,8 @@ public class Reservation extends BaseMongoPersistent<Reservation> {
     private int availableSeats;
 
     public List<Passenger> getPassengers() {
+        if(passengers == null)
+            passengers = new ArrayList<>();
         return passengers;
     }
 

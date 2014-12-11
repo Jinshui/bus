@@ -1,6 +1,7 @@
 package com.bus.services.config;
 
 import com.bus.services.config.cxf.InvokeFaultExceptionMapper;
+import com.bus.services.services.ReservationService;
 import com.bus.services.services.RoutesService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -36,6 +37,9 @@ import java.util.*;
 public class CxfConfig {
     @Resource
     private RoutesService routesService;
+    @Resource
+    private ReservationService reservationService;
+
     //Beans for metamore-ui
     private static class BusObjectMapper extends ObjectMapper {
         public BusObjectMapper() {
@@ -70,6 +74,7 @@ public class CxfConfig {
     public Server restServer() {
         List<Object> serviceBeans = new ArrayList<>();
         serviceBeans.add(routesService);
+        serviceBeans.add(reservationService);
         JAXRSServerFactoryBean factoryBean = new JAXRSServerFactoryBean();
         factoryBean.setAddress("");
         factoryBean.setServiceBeans(serviceBeans);

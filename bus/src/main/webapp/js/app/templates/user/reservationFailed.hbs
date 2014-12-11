@@ -1,0 +1,29 @@
+<div data-role="content" style="padding: 10px;">
+    <div style="padding:5px; background-color:white; color:gray">
+        <div style="height:10px; "></div>
+        <div style="font-size: larger">
+            <span style="color:red">预约失败!</span>
+            <div style="height:10px"><hr></div>
+            {{printDateInChinese route.availableDay}} {{route.reservationTime}}
+        </div>
+        <div style="height:7px"></div>
+        {{route.startStation}} 开往 <span style="color:black">{{route.endStation}}</span><br>
+        途经: {{route.middleStations}}
+        <div style="padding-top:5px; font-size: larger;">
+            乘车地点: {{route.startStationDesc}}
+        </div>
+        <div style="height:15px"><hr></div>
+        <span style="color:red; font-size: larger">您预约的车辆座位已满,您可以重新预约,或者选择其它时间的车辆.</span>
+    </div>
+    <div style="height:20px"></div>
+    <div class="div_with_title">
+        <h1 class="div_title"><span style="color: green; background-color: #f9f9f9;"> &nbsp;&nbsp;温馨提示&nbsp;&nbsp;</span></h1>
+        1. 请提前安排好出行时间, 班车按时发车,不等候;<br>
+        2. 稍候系统会通过微信给您发送预约消息, 请上车时出示此消息; <br>
+        3. 乘车地点有"一起巴士"的标识, 如果找不到乘车地点, 请与司机联系询问.
+    </div>
+    <div style="height:10px"></div>
+</div>
+<div class="footer_btn" style="position:fixed;bottom:0;width:100%">
+    重新预约
+</div>

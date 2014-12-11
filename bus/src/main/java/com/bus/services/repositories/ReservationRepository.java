@@ -24,4 +24,12 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     public List<Reservation> findByDate(String routeId, int date) {
         return findByCriteria(Criteria.where("routeId").is(routeId).and("date").is(date));
     }
+
+    public Reservation findByDateTime(String routeId, int date, int departureTime) {
+        List<Reservation> list = findByCriteria(Criteria.where("routeId").is(routeId).and("date").is(date).and("departureTime").is(departureTime));
+        if(list.isEmpty())
+            return null;
+        else
+            return list.get(0);
+    }
 }

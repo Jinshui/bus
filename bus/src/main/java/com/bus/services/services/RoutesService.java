@@ -82,7 +82,8 @@ public class RoutesService {
     }
     @GET
     @Path("/{id}")
-    public Route getRoute(@PathParam("id")String id, @QueryParam("date1")Integer date1, @QueryParam("date2")Integer date2){
+    @Produces(MediaType.APPLICATION_JSON)
+    public Route getRoute(@PathParam("id")String id){
         Route route = routeRepository.findOne(id);
         if(route == null)
             return null;

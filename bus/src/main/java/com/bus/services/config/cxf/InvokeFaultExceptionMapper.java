@@ -1,7 +1,7 @@
 package com.bus.services.config.cxf;
 
 import com.bus.services.exceptions.ApplicationException;
-import com.bus.services.exceptions.ApplicationExceptionEntity;
+import com.bus.services.exceptions.ErrorInfo;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -17,10 +17,9 @@ public class InvokeFaultExceptionMapper implements ExceptionMapper {
         rb.type("application/json;charset=UTF-8");
         if (ex instanceof ApplicationException) {//自定义的异常类
             ApplicationException e = (ApplicationException) ex;
-            ApplicationExceptionEntity entity=new ApplicationExceptionEntity(e.getErrCode(),e.getErrSubCode(),e.getMessage());
-            rb.entity(entity);
+            rb.entity(e.getErrorInfo());
         }else{
-            rb.entity(ex);
+            rb.entity(ex.getMessage());
         }
         rb.language(Locale.SIMPLIFIED_CHINESE);
         return rb.build();

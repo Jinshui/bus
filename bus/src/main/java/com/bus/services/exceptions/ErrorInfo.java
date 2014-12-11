@@ -2,23 +2,19 @@ package com.bus.services.exceptions;
 
 import java.io.Serializable;
 
-public class ApplicationExceptionEntity implements Serializable {
+public class ErrorInfo implements Serializable {
     private static final long serialVersionUID = 1L;
-    public ApplicationExceptionEntity(){}
+    public ErrorInfo(){}
 
-    public ApplicationExceptionEntity(int errCode, String errSubCode, String message) {
+    public ErrorInfo(int errCode, int errSubCode, String message) {
         super();
         this.errCode = errCode;
         this.errSubCode = errSubCode;
         this.message = message;
     }
 
-    /*错误码，默认为0*/
     private int errCode;
-
-    /*错误子码，自定义该值*/
-    private String errSubCode;
-
+    private int errSubCode;
     private String message;
 
     public int getErrCode() {
@@ -29,11 +25,11 @@ public class ApplicationExceptionEntity implements Serializable {
         this.errCode = errCode;
     }
 
-    public String getErrSubCode() {
+    public int getErrSubCode() {
         return errSubCode;
     }
 
-    public void setErrSubCode(String errSubCode) {
+    public void setErrSubCode(int errSubCode) {
         this.errSubCode = errSubCode;
     }
 
