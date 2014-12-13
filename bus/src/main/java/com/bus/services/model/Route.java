@@ -1,8 +1,10 @@
 package com.bus.services.model;
 
+import com.bus.services.config.CascadeSave;
 import com.bus.services.model.base.BaseMongoPersistent;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class Route extends BaseMongoPersistent<Route> {
     private String endStation;
     private String middleStations;
     private String mapFileName;
+    @DBRef
+    @CascadeSave
     private List<TimeRange> timeRanges;
     private boolean published;
 
@@ -27,7 +31,7 @@ public class Route extends BaseMongoPersistent<Route> {
     @Transient
     private List<Reservation> reservations;
     @Transient
-    private Date matchedDate;
+    private Date closestAvailableDate;
 
     public String getName() {
         return name;
@@ -112,11 +116,11 @@ public class Route extends BaseMongoPersistent<Route> {
         this.reservations = reservations;
     }
 
-    public Date getMatchedDate() {
-        return matchedDate;
+    public Date getClosestAvailableDate() {
+        return closestAvailableDate;
     }
 
-    public void setMatchedDate(Date matchedDate) {
-        this.matchedDate = matchedDate;
+    public void setClosestAvailableDate(Date closestAvailableDate) {
+        this.closestAvailableDate = closestAvailableDate;
     }
 }

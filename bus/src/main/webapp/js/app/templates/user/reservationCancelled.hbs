@@ -1,13 +1,13 @@
 <div data-role="content" style="padding: 10px;">
-    <div style="padding:5px; background-color:white">
+    <div style="padding:5px; background-color:white; color:gray">
         <div style="height:10px; "></div>
         <div style="font-size: larger">
-            巴士预约成功
+            已取消预约
             <div style="height:10px"><hr></div>
             {{printDateInChinese reservation.fullDate}} <span style="color:green">{{reservation.timeInHH_mm}}</span>
         </div>
         <div style="height:7px"></div>
-        {{reservation.route.startStation}}  <span style="color:green">开往</span>  {{reservation.route.endStation}}<br>
+        {{reservation.route.startStation}}  开往  {{reservation.route.endStation}}<br>
         途经: {{reservation.route.middleStations}}
         <div style="padding-top:5px; font-size: larger;">
             乘车地点: {{reservation.route.startStationDesc}}
@@ -27,6 +27,6 @@
     </div>
     <div style="height:10px"></div>
 </div>
-<div class="footer_btn" id="btn_cancel_reservation" style="background-color:red">
-    取消预约
+<div class="footer_btn" id="btn_restore_cancel" style="background-color:darkgreen">
+    重新预约
 </div>

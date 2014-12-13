@@ -30,15 +30,19 @@
             return formatTime(time);
         });
 
-        var routeId;
         $(document).on("pageinit","#route_detail",function(){
             var url = window.location.href;
             var urlArray = url.split('?');
             if(urlArray.length == 2){
-                var params = urlArray[1].split('=');
-                if(params.length == 2 && params[0] === 'id'){
-                    routeId = params[1];
-                    transitionToRoutePage(routeId);
+                var params = urlArray[1].split('=')
+                if(params.length == 2){
+                    if(params[0] === 'routeId'){
+                        var routeId = params[1];
+                        transitionToRoutePage(routeId);
+                    }else if(params[0] === 'passengerId'){
+                        passengerId = params[1];
+                        transitionToReservationListPage(passengerId);
+                    }
                     return;
                 }
             }
@@ -59,17 +63,28 @@
                 //TODO: Failureasdnh
             });
         }
-        var currentRoute;
+
+        function transitionToReservationListPage(passengerId){
+            $.ajax({
+                type: 'GET',
+                url: "/bus/services/reservations?" + "passengerId=" + passengerId
+            }).done(function( reservations, textStatus, jqXHR ){
+                showReservationListPage(reservations);
+            }).fail(function( jqXHR, textStatus, errorThrown ) {
+                //TODO: Failureasdnh
+            });
+        }
+
         function showRouteDetailPage(route){
-            currentRoute = route;
             if(route && route.timeRanges && route.timeRanges.length > 0){
-                route.availableDay = new Date(route.matchedDate);
+                //closestAvailableDate is computed and returned from server
+                route.selectedDate = new Date(route.closestAvailableDate);
                 route.availableStartPointsArray = [];
                 var _startPointsArray = route.timeRanges[0].startPoints.split(' ');
                 if(_startPointsArray){
                     var today = new Date();
                     _startPointsArray.forEach(function(item){
-                        if( route.availableDay.getDay() != today.getDay() || Number(getHHmm(today)) < Number(item)){
+                        if( route.selectedDate.getDay() != today.getDay() || Number(getHHmm(today)) < Number(item)){
                             route.availableStartPointsArray.push(item);
                         }
                     });
@@ -98,7 +113,7 @@
 
             var generateBusInfo = function(vehicle, time){
                 if(vehicle){
-                    return formatInChineseWeek(route.availableDay) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个座位。<br>' +
+                    return formatInChineseWeek(route.selectedDate) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个座位。<br>' +
                             '车牌 ' + vehicle.licenseTag + ' ' + vehicle.driverName + ' ' + vehicle.driverContact + '。<br>' +
                             '票价' + route.price + '元 由' + vehicle.company + '提供服务。';
                 }else{
@@ -112,19 +127,20 @@
                 reservationTime = Number(radioElements[0].value);
                 var defaultSelectedVehicle = findSelectedVehicle(Number(radioElements[0].value));
                 $('#bus_status').html(generateBusInfo(defaultSelectedVehicle, radioElements[0].value));
+                route.selectedVehicle = defaultSelectedVehicle;
 
                 radioElements.on('click', function(event){
                     var selectedVehicle = findSelectedVehicle(Number(event.target.value));
                     reservationTime = Number(event.target.value);
                     $('#bus_status').html(generateBusInfo(selectedVehicle, event.target.value));
+                    route.selectedVehicle = selectedVehicle;
                 });
             }
 
             $('#btn_submit').on('click', function(event){
                 var userPhone = $('#user_phone')[0].value;
                 var userName = $('#user_name')[0].value;
-                var date = getYyyyMMdd(route.availableDay);
-                var routeId = route.id;
+                var date = getYyyyMMdd(route.selectedDate);
                 var openId = 'xxxxxxxx';
                 if(userPhone === '' || userPhone.trim() === ''){
                     showPage('dialog', 'user/dialog', {header:'请补充信息', message:'请输入您的联系电话.以便于司机在必要时联系您.'}, true);
@@ -135,51 +151,59 @@
                     return;
                 }
                 var request = JSON.stringify({
-                    routeId: routeId,
+                    routeId: route.id,
+                    vehicleId: route.selectedVehicle.id,
                     openId: openId,
                     userName: userName,
                     phone: userPhone,
                     date: date,
                     time: reservationTime
                 });
-                sendReservationRequest(request);
+                sendReservationRequest(request, route);
             });
         }
 
-        function sendReservationRequest( request ){
+        function sendReservationRequest(request , route){
             $.ajax({
                 type: 'POST',
                 contentType: "application/json; charset=utf-8",
                 url: "/bus/services/reservations",
                 data: request,
                 processData : false
-            }).done(function( reservation, textStatus, jqXHR ){
-                currentRoute.reservationTime = formatTime(request.time);
-                showReservationSucc(currentRoute, reservation, request);
+            }).done(function(reservation, textStatus, jqXHR ){
+                showReservationSucc(reservation);
             }).fail(function( jqXHR, textStatus, errorThrown ) {
-                currentRoute.reservationTime = formatTime(request.time);
-                showReservationFailed(currentRoute, jqXHR.responseText, request);
+                var time;
+                if(typeof request === "string"){
+                    time = JSON.parse(request).time;
+                }else{
+                    time = request.time;
+                }
+                route.reservationTime = formatTime(time);
+                showReservationFailed(route, jqXHR.responseText, request);
             });
         }
 
-
-        function showReservationSucc(route, reservation, request){
-            showPage('reservation_result', 'user/reservationSucc', {route: route });
+        function showReservationSucc(reservation){
+            normalizeReservation(reservation);
+            showPage('reservation_result', 'user/reservationSucc', {reservation: reservation});
             $('#btn_cancel_reservation').on('click', function(event){
                 $.ajax({
                     type: 'DELETE',
                     url: "/bus/services/reservations/"+reservation.id
                 }).done(function( message, textStatus, jqXHR ){
-                    showReservationCancel(currentRoute, request);
+                    showReservationCancelled(reservation);
                 }).fail(function( jqXHR, textStatus, errorThrown ) {
-                    showReservationFailed(currentRoute, jqXHR.responseText, request);
+                    //TODO: cancellation failed
                 });
             });
         }
 
-        function showReservationCancel(route, request){
-            showPage('reservation_cancel', 'user/reservationCancelled', {route: route });
+        function showReservationCancelled(reservation){
+            normalizeReservation(reservation);
+            showPage('reservation_cancel', 'user/reservationCancelled', {reservation: reservation});
             $('#btn_restore_cancel').on('click', function(event){
+                var request = buildRestoreReservationRequest(reservation);
                 sendReservationRequest(request);
             });
         }
@@ -187,6 +211,7 @@
         function showReservationFailed(route, responseText, request){
             var response = JSON.parse(responseText);
             if(response.errCode == 100){
+                response.duplicate = true;
                 response.message = "您已经成功预约过该班次车辆,请勿重复预约";
             }else{
                 response.message = "您预约的车辆座位已满,您可以重新预约,或者选择其它时间的车辆.";
@@ -197,6 +222,28 @@
             });
         }
 
+        function showReservationListPage(reservations){
+            showPage('reservation_list', 'user/myReservations', {reservations:reservations});
+            $('.btn_cancel_reservation').on('click', function(event){
+                var reservationId = $(event.target).find('#reservationId').attr('value');
+                var reservation;
+                reservations.some(function(_reservation){
+                    if(_reservation.id === reservationId){
+                        reservation = _reservation;
+                    }
+                    return reservation;
+                });
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/bus/services/reservations/"+reservationId
+                }).done(function( message, textStatus, jqXHR ){
+                    showReservationCancelled(reservation);
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    //TODO: cancellation failed
+                });
+            });
+        }
+
         function showPage(pageId, templateName,  data){
             var page = $("#"+pageId);
             var template = Bus[templateName];
@@ -204,6 +251,24 @@
             page.html(content);
             $.mobile.changePage("#"+pageId, { transition: "fade" });
             page.enhanceWithin();
+        }
+
+        function buildRestoreReservationRequest(reservation){
+            return JSON.stringify({
+                routeId: reservation.route.id,
+                vehicleId: reservation.vehicle.id,
+                openId: reservation.passenger.id,
+                userName: reservation.passenger.userName,
+                phone: reservation.passenger.phone,
+                date: reservation.date,
+                time: reservation.departureTime
+            });
+        }
+
+        function normalizeReservation(reservation){
+            reservation.timeInHH_mm = formatTime(reservation.departureTime);
+            //convert string to data object
+            reservation.fullDate = new Date(reservation.fullDate);
         }
 
         //Some date utility functions
@@ -251,6 +316,8 @@
     <div data-role="page" id="reservation_result">
     </div>
     <div data-role="page" id="reservation_cancel">
+    </div>
+    <div data-role="page" id="reservation_list">
     </div>
     <div data-role="page" data-dialog="true" data-close-btn="none" id="dialog">
     </div>

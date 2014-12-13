@@ -58,6 +58,11 @@ public class MongoConfig extends AbstractMongoConfiguration {
         }
     }
 
+    @Bean
+    public CascadingMongoEventListener getCascadingMongoEventListener(){
+        return new CascadingMongoEventListener();
+    }
+
     @Override
     @Bean
     public MongoClient mongo() throws Exception {

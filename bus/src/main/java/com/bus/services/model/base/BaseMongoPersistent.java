@@ -13,9 +13,11 @@ public class BaseMongoPersistent<T extends BaseMongoPersistent> implements Mongo
     @Id
     private String id;
     /** The timestamp when this object was created */
+    @JsonIgnore
     private Date createdOn = new Date();
     /** The timestamp when this object was last updated */
     @Indexed //This is often used as the default sort field by the WebUI
+    @JsonIgnore
     private Date lastUpdatedOn = new Date();
     @Transient
     @JsonIgnore

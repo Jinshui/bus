@@ -53,6 +53,13 @@ public class RoutesService {
         return hour * 100 + minute;
     }
 
+    private int getYyyyMMdd(Calendar calendar){
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+        return year * 10000 + (month + 1) * 100 + date;
+    }
+
     private TimeRange findTimeRange(List<TimeRange> timeRanges, Calendar calendar, boolean compareTime){
         for(TimeRange timeRange : timeRanges){
             if(StringUtils.isNotEmpty(timeRange.getStartPoints())){
@@ -82,7 +89,7 @@ public class RoutesService {
     }
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/json;charset=\"utf-8\"")
     public Route getRoute(@PathParam("id")String id){
         Route route = routeRepository.findOne(id);
         if(route == null)
@@ -104,33 +111,33 @@ public class RoutesService {
                     if(matchedTimeRange == null){ //Try Saturday, Sunday, Monday
                         calendar.add(Calendar.DAY_OF_MONTH, 1);
                     }
-                }while(matchedTimeRange == null && calendar.get(Calendar.DAY_OF_WEEK) <= Calendar.MONDAY);
+                }while(matchedTimeRange == null && calendar.get(Calendar.DAY_OF_WEEK) != Calendar.TUESDAY);
             }
         }
 
         route.getTimeRanges().clear();
         if(matchedTimeRange != null){
             route.getTimeRanges().add(matchedTimeRange);
-            route.setMatchedDate(calendar.getTime());
-            List<Reservation> reservations = reservationService.findByDate(route.getId(), getHHmm(calendar));
+            route.setClosestAvailableDate(calendar.getTime());
+            List<Reservation> reservations = reservationService.find(route.getId(), null, getYyyyMMdd(calendar), null);
 
             if(reservations.size() > 0){
                 for(Vehicle vehicle : matchedTimeRange.getVehicles()){
                     for(int i=0; i<vehicle.getStartPoints().size(); i++){
                         Integer startPoint = vehicle.getStartPoints().get(i);
                         vehicle.getAvailableSeats().add(i, vehicle.getSeatCount());
+                        int reservedSeats = 0;
                         for(Reservation reservation : reservations){
                             if(reservation.getDate() == startPoint.intValue()){
-                                vehicle.getAvailableSeats().set(i, vehicle.getSeatCount() - reservation.getPassengers().size());
-                                break;
+                                reservedSeats ++;
                             }
                         }
+                        vehicle.getAvailableSeats().set(i, vehicle.getSeatCount() - reservedSeats);
                     }
                 }
             }else{
                 for(Vehicle vehicle : matchedTimeRange.getVehicles()){
                     for(int i=0; i<vehicle.getStartPoints().size(); i++){
-                        Integer startPoint = vehicle.getStartPoints().get(i);
                         vehicle.getAvailableSeats().add(i, vehicle.getSeatCount());
                     }
                 }

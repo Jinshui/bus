@@ -14,8 +14,6 @@ public class Passenger extends BaseMongoPersistent<Passenger> {
     @Indexed
     private String userName;
     private String phone;
-    @DBRef
-    private List<Reservation> reservations;
 
     public String getPhone() {
         return phone;
@@ -31,16 +29,6 @@ public class Passenger extends BaseMongoPersistent<Passenger> {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public List<Reservation> getReservations(){
-        if(reservations == null)
-            reservations = new ArrayList<>();
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations){
-        this.reservations = reservations;
     }
 
     @Override

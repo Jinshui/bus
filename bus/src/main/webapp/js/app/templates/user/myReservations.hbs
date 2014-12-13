@@ -1,0 +1,38 @@
+<div data-role="content" style="padding: 10px;">
+    {{#each reservations}}
+        <div style="padding:5px 10px; background-color:white">
+            <div style="height:10px; "></div>
+            <div style="font-size: larger">
+                巴士预约成功
+                <div style="height:10px"><hr></div>
+                11月24日 星期一 <span style="color:green">07:20</span>
+            </div>
+            <div style="height:7px"></div>
+            {{route.startStation}}  <span style="color:green">开往</span>  {{route.endStation}}<br>
+            途经: {{route.middleStations}}
+            <div style="font-size: large">
+                乘车地点: {{route.startStationDesc}}
+            </div>
+            <div style="height:15px"><hr></div>
+            车牌: {{vehicle.licenseTag}}<br>
+            司机: {{vehicle.driverNam}} <span style="background-color: limegreen">{{vehicle.driverContact}}</span>
+            <div style="height:7px"></div>
+            统一票价为{{route.price}}元
+        </div>
+        <div class="btn_cancel_reservation footer_btn" value="{{id}}" style="background-color:red">
+            <input type="hidden" id="reservationId" name="reservationId" value="{{id}}">
+            取消预约
+        </div>
+        <div style="height:20px"></div>
+    {{else}}
+        <div style="font-size: larger; padding: 50px 0; text-align: center">
+            未发现您有任何成功的车辆预约
+        </div>
+    {{/each}}
+        <div class="div_with_title">
+            <h1 class="div_title"><span style="color: green; background-color: #f9f9f9;"> &nbsp;&nbsp;温馨提示&nbsp;&nbsp;</span></h1>
+            1. 请提前安排好出行时间, 班车按时发车,不等候;<br>
+            2. 稍候系统会通过微信给您发送预约消息, 请上车时出示此消息; <br>
+            3. 乘车地点有"一起巴士"的标识, 如果找不到乘车地点, 请与司机联系询问.
+        </div>
+</div>

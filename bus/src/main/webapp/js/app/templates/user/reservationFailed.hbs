@@ -4,7 +4,7 @@
         <div style="font-size: larger">
             <span style="color:red">预约失败!</span>
             <div style="height:10px"><hr></div>
-            {{printDateInChinese route.availableDay}} {{route.reservationTime}}
+            {{printDateInChinese route.selectedDate}} {{route.reservationTime}}
         </div>
         <div style="height:7px"></div>
         {{route.startStation}} 开往 <span style="color:black">{{route.endStation}}</span><br>
@@ -26,6 +26,6 @@
     </div>
     <div style="height:10px"></div>
 </div>
-<div class="btn_restore_failed" style="position:fixed;bottom:0;width:100%">
+<div class="footer_btn" id="btn_restore_failed" style="position:fixed;bottom:0;width:100%">
     重新预约
 </div>

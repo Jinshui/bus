@@ -1,14 +1,17 @@
 package com.bus.services.model;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.bus.services.model.base.BaseMongoPersistent;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.bus.services.model.ReservationMgmt.ReservationStat;
 
-public class Vehicle {
+@Document(collection = Vehicle.MONGO_COLLECTION)
+public class Vehicle extends BaseMongoPersistent<Vehicle> {
+    public final static String MONGO_COLLECTION = "Vehicles";
     private String name;
     private Integer seatCount;
     private String licenseTag;

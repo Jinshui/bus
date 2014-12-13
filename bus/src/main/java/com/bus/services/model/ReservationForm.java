@@ -2,6 +2,7 @@ package com.bus.services.model;
 
 public class ReservationForm {
     private String routeId;
+    private String vehicleId;
     private String userName;
     private String phone;
     private String openId;
@@ -18,6 +19,14 @@ public class ReservationForm {
 
     public String getRouteId() {
         return routeId;
+    }
+
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public void setRouteId(String routeId) {
@@ -54,5 +63,9 @@ public class ReservationForm {
 
     public void setDate(int date) {
         this.date = date;
+    }
+
+    public String toString(){
+        return "routeId: " + routeId +", vehicleId: "+vehicleId+", userName:"+userName+", phone: "+phone+", openId: "+openId+", date: "+date+", time: "+time;
     }
 }

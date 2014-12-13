@@ -2,9 +2,7 @@ package com.bus.services.services;
 
 
 import com.bus.services.exceptions.ApplicationException;
-import com.bus.services.model.Passenger;
-import com.bus.services.model.Reservation;
-import com.bus.services.model.ReservationForm;
+import com.bus.services.model.*;
 import com.bus.services.repositories.PassengerRepository;
 import com.bus.services.repositories.ReservationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,41 +30,44 @@ public class ReservationService {
     ObjectMapper objectMapper;
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Reservation> findByDate(String routeId, int date) {
-        return reservationRepository.findByDate(routeId, date);
+    public List<Reservation> find(@QueryParam("routeId")String routeId, @QueryParam("passengerId")String passengerId, @QueryParam("date")Integer date, @QueryParam("time")Integer time) {
+        return reservationRepository.find(routeId, passengerId, date, time);
     }
     @GET
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Reservation getReservation(@PathParam("id")String id){
         return reservationRepository.findOne(id);
     }
     @POST
     public Reservation addReservation(ReservationForm formData) throws ApplicationException {
         log.info("Create new reservation: {}", formData);
-        Reservation reservation = reservationRepository.findByDateTime(formData.getRouteId(), formData.getDate(), formData.getTime());
-        Passenger passenger = passengerRepository.findOne(formData.getOpenId());
-        if(passenger == null){
-            passenger = new Passenger();
-            passenger.setId(formData.getOpenId());
+        Reservation reservation = reservationRepository.findOne(formData.getRouteId(), formData.getOpenId(), formData.getDate(), formData.getTime());
+        if(reservation != null){
+            if(reservation.getStatus() == Reservation.Status.DELETED){
+                reservation.setStatus(Reservation.Status.NEW);
+            }else{
+                throw new ApplicationException(100, "duplicate reservation found!");
+            }
+        }else{
+            reservation = new Reservation();
         }
+        Passenger passenger = new Passenger();
+        passenger.setId(formData.getOpenId());
         passenger.setPhone(formData.getPhone());
         passenger.setUserName(formData.getUserName());
-        if(reservation == null){
-            reservation = new Reservation();
-            reservation.setRouteId(formData.getRouteId());
-            reservation.setDepartureTime(formData.getTime());
-            reservation.setDate(formData.getDate());
-        }
-        if(reservation.getPassengers().contains(passenger)){
-            throw new ApplicationException(100, "duplicate reservation found!");
-        }
-        //save reservation
-        reservation.getPassengers().add(passenger);
-        reservation = reservationRepository.save(reservation);
-        //add reservation to passenger
-        passenger.getReservations().add(reservation);
-        passengerRepository.save(passenger);
-        return reservation;
+        reservation.setPassenger(passenger);
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(formData.getVehicleId());
+        Route route = new Route();
+        route.setId(formData.getRouteId());
+        reservation.setRoute(route);
+        reservation.setVehicle(vehicle);
+        reservation.setRouteId(formData.getRouteId());
+        reservation.setDepartureTime(formData.getTime());
+        reservation.setDate(formData.getDate());
+        reservationRepository.save(reservation);
+        return getReservation(reservation.getId());
     }
     @DELETE
     @Path("/{id}")
@@ -76,11 +77,7 @@ public class ReservationService {
         if(reservation == null){
             throw new ApplicationException(404, "No such reservation: " + id);
         }
-        Passenger passenger = passengerRepository.findOne(pid);
-        if(passenger == null){
-            throw new ApplicationException(404, "No such passenger: " + pid);
-        }
-        reservation.getPassengers().remove(passenger);
+        reservation.setStatus(Reservation.Status.DELETED);
         reservationRepository.save(reservation);
     }
 }
