@@ -6,6 +6,7 @@ import com.bus.services.model.TimeRange;
 import com.bus.services.model.Vehicle;
 import com.bus.services.repositories.RouteRepository;
 import com.bus.services.util.CollectionUtil;
+import com.bus.services.util.DateUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.helpers.IOUtils;
@@ -47,19 +48,6 @@ public class RoutesService {
         return routeRepository.findAll();
     }
 
-    private int getHHmm(Calendar calendar){
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        return hour * 100 + minute;
-    }
-
-    private int getYyyyMMdd(Calendar calendar){
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int date = calendar.get(Calendar.DAY_OF_MONTH);
-        return year * 10000 + (month + 1) * 100 + date;
-    }
-
     private TimeRange findTimeRange(List<TimeRange> timeRanges, Calendar calendar, boolean compareTime){
         for(TimeRange timeRange : timeRanges){
             if(StringUtils.isNotEmpty(timeRange.getStartPoints())){
@@ -76,7 +64,7 @@ public class RoutesService {
                     if( (dayOfWeek ==  Calendar.SUNDAY || dayOfWeek ==  Calendar.SATURDAY) && !timeRange.isWeekend() ){
                         continue;
                     }
-                    if(compareTime && Integer.parseInt(time) <= getHHmm(calendar)) {
+                    if(compareTime && Integer.parseInt(time) <= DateUtil.getHHmm(calendar)) {
                         continue;
                     }
                     if(calendar.before(endCalendar) && calendar.after(startCalendar)){
@@ -119,7 +107,7 @@ public class RoutesService {
         if(matchedTimeRange != null){
             route.getTimeRanges().add(matchedTimeRange);
             route.setClosestAvailableDate(calendar.getTime());
-            List<Reservation> reservations = reservationService.find(route.getId(), null, getYyyyMMdd(calendar), null);
+            List<Reservation> reservations = reservationService.find(route.getId(), null, DateUtil.getYyyyMMdd(calendar), null);
 
             if(reservations.size() > 0){
                 for(Vehicle vehicle : matchedTimeRange.getVehicles()){
@@ -147,15 +135,12 @@ public class RoutesService {
         return route;
     }
 
-    public static void main(String[] args) {
-        String a = "0820 0920   0720 0740   0800   0840 0900  0940 1000";
-        List<String> timePointList = Arrays.asList(StringUtils.splitByWholeSeparator(a, " "));
-        Collections.sort(timePointList);
-        System.out.println(timePointList);
-    }
-
     @PUT
     public Route addRoute(Route route){
+        if(route.getId() != null){
+            Route existingRoute = routeRepository.findOne(route.getId());
+            route.setMapFileName(existingRoute.getMapFileName());
+        }
         return routeRepository.save(route);
     }
     @DELETE
@@ -199,11 +184,18 @@ public class RoutesService {
                     }
                 }
             }
+            if(mapFileName != null){
+                route.setMapFileName("maps/" + mapFileName);
+            }
             return routeRepository.save(route);
         }
         catch (Exception e) {
             log.warn("Failed to create route due to errors: ", e);
             throw new ApplicationException(e.getMessage());
         }
+    }
+
+    public String getUploadPath(){
+        return uploadPath;
     }
 }

@@ -47,4 +47,20 @@ public class BaseMongoPersistent<T extends BaseMongoPersistent> implements Mongo
         this.lastUpdateUser = lastUpdateUser;
         return (T) this;
     }
+
+    public boolean equals(Object another){
+        if(another == null)
+            return false;
+        if(another.getClass() == this.getClass()){
+            T anotherMongoPersistent = (T)another;
+            return anotherMongoPersistent.getId() != null && anotherMongoPersistent.getId().equals(this.getId());
+        }
+        return false;
+    }
+
+    public int hashCode(){
+        if(getId() == null)
+            return 0;
+        return getId().hashCode();
+    }
 }

@@ -1,11 +1,11 @@
 <div data-role="content" style="padding: 0">
-    <div class="content_header" style="background-color: gray;">
+    <div class="content_header">
         <h3>添加发车时间</h3>
     </div>
     <div style="padding: 0 10px">
     {{#each timeRanges}}
         <div class="timeRange" id="{{@index}}">
-            <div class="content_header">
+            <div class="sub_header">
                 生效日期{{sum @index 1}}
                 {{#unless @first}}
                 <div class="del_button" id="{{@index}}">

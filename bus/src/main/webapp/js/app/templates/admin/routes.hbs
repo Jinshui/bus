@@ -1,11 +1,11 @@
 <div data-role="header" data-position="fixed">
-    <div class="content_header" style="background-color: gray;">
+    <div class="content_header">
         <h3>路线管理</h3>
     </div>
 </div>
 <div data-role="content" style="padding: 0">
     {{#each routes}}
-        <div class="content_header">
+        <div class="sub_header">
             {{name}}
             <div class="edit_button" id="{{@index}}">
                 编辑

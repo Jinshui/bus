@@ -5,9 +5,9 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.bus.services.model.ReservationMgmt.ReservationStat;
+import java.util.Map;
 
 @Document(collection = Vehicle.MONGO_COLLECTION)
 public class Vehicle extends BaseMongoPersistent<Vehicle> {
@@ -22,9 +22,9 @@ public class Vehicle extends BaseMongoPersistent<Vehicle> {
 
     //The following fields are used for reservation management only
     @Transient
-    private List<ReservationStat> reservationStats; //reserved seats for each start points -- for admin page
-    @Transient
-    private List<Integer> availableSeats; //available seats for each start points -- for user page
+    private List<Integer> availableSeats;
+    @Transient//date --> reservation list
+    private Map<Integer, List<ReservationMgmtList.ReservationStat>> reservationStats;
 
     public List<Integer> getStartPoints() {
         if(startPoints == null){
@@ -85,11 +85,14 @@ public class Vehicle extends BaseMongoPersistent<Vehicle> {
         this.driverContact = driverContact;
     }
 
-    public List<ReservationStat> getReservationStats(){
+    public Map<Integer, List<ReservationMgmtList.ReservationStat>> getReservationStats(){
+        if(reservationStats == null){
+            reservationStats = new HashMap<>();
+        }
         return reservationStats;
     }
 
-    public void setReservationStats(List<ReservationStat> reservationStats) {
+    public void setReservationStats(Map<Integer, List<ReservationMgmtList.ReservationStat>> reservationStats) {
         this.reservationStats = reservationStats;
     }
 

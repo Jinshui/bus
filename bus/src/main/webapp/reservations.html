@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+<link rel="stylesheet" href="css/bus.css"/>
+<script src="js/gen/lib.js"></script>
+<script src="js/gen/template.js"></script>
+<script>
+Handlebars.registerHelper('printDateInChinese', function(date) {
+    return formatInChineseWeek(date);
+});
+//format time from HHmm to HH:mm
+Handlebars.registerHelper('formatTime', function(time) {
+    return formatTime(time);
+});
+
+Handlebars.registerHelper('sum', function(num1, num2) {
+    return num1 + num2;
+});
+
+$(document).on("pageinit","#all_reservations",function(){
+    transitionToReservationListPage();
+});
+
+function transitionToReservationListPage(){
+    $.ajax({
+        type: 'GET',
+        url: "/bus/services/reservations/manage"
+    }).done(function( reservations, textStatus, jqXHR ){
+                showReservationMgmtListPage(reservations);
+    }).fail(function( jqXHR, textStatus, errorThrown ) {
+        //TODO: Failureasdnh
+    });
+}
+
+function showReservationMgmtListPage(routes){
+    showPage('all_reservations', 'admin/reservations', {routes:routes});
+    $('.view-reservation').on('click', function(event){
+        var routeId = $(event.target).find('#routeId').attr('value');
+        var date = $(event.target).find('#date').attr('value');
+        var time = $(event.target).find('#time').attr('value');
+        var reservation;
+        $.ajax({
+            type: 'GET',
+            url: "/bus/services/reservations/manage/detail?routeId="+routeId+"&date="+date+"&time="+time
+        }).done(function( reservationDetail, textStatus, jqXHR ){
+                    showReservationMgmtDetail(reservationDetail);
+        }).fail(function( jqXHR, textStatus, errorThrown ) {
+            //TODO: cancellation failed
+        });
+    });
+}
+function showReservationMgmtDetail(reservationDetail){
+    showPage('reservation_detail', 'admin/reservationDetail', reservationDetail);
+}
+
+function showPage(pageId, templateName,  data){
+    var page = $("#"+pageId);
+    var template = Bus[templateName];
+    var content = template(data);
+    page.html(content);
+    $.mobile.changePage("#"+pageId, { transition: "fade" });
+    page.enhanceWithin();
+}
+
+var week = ['\u65e5','\u4e00','\u4e8c','\u4e09','\u56db','\u4e94','\u516d'];
+//return string like '11月24日 星期一'
+function formatInChineseWeek(date){
+    var result = "";
+    if(typeof date === "string" || typeof date === "number"){
+        date = '' + date;
+        if(/^[0-9]{8}$/.test(date)){
+            date = new Date(date.substr(0,4) + "-" + date.substr(4,2) + "-" + date.substr(6, 2));
+        }else{
+            date = new Date(date);
+        }
+    }
+    result = result + (date.getMonth()+1) + '\u6708';
+    result = result + date.getDate() + '\u65e5';
+    result = result + ' \u661f\u671f' + week[date.getDay()];
+    return result;
+}
+
+//format time from HHmm to HH:mm
+function formatTime(time){
+    var strTime = '' + time;
+    if(/^[0-9]{4}$/.test(strTime)){
+        return strTime.substring(0, 2) + ":" + strTime.substring(2, 4);
+    }
+    if(/^[0-9]{3}$/.test(strTime)){
+        return strTime.substring(0, 1) + ":" + strTime.substring(1, 3);
+    }
+}
+</script>
+</head>
+<body>
+    <div data-role="page" id="all_reservations"></div>
+    <div data-role="page" id="reservation_detail"></div>
+</body>
+</html>

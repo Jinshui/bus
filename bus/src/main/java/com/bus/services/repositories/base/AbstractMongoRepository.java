@@ -170,6 +170,22 @@ public abstract class AbstractMongoRepository<T extends MongoPersistent> impleme
         return getMongoTemplate().find(query(criteria), getClazz());
     }
 
+
+    protected List<T> findByCriteria(Criteria criteria, String[] sortProperties, Boolean isDesc) {
+        return findByCriteria(criteria, sortProperties, isDesc, null);
+    }
+
+
+    protected List<T> findByCriteria(Criteria criteria, String[] sortProperties, Boolean isDesc, String fields) {
+        Query query = query(criteria);
+        if (sortProperties != null && sortProperties.length > 0) {
+            Sort sort = new Sort(BooleanUtil.isTrue(isDesc) ? Sort.Direction.DESC : Sort.Direction.ASC, sortProperties);
+            query = query.with(sort);
+        }
+        addReturnFieldsToQuery(fields, query);
+        return getMongoTemplate().find(query, getClazz());
+    }
+
     /**
      * Find a page worth of items.
      * @param criteria The base criteria

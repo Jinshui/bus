@@ -39,6 +39,16 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>mapFileServlet</servlet-name>
+        <servlet-class>com.bus.services.servlet.MapFileServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>mapFileServlet</servlet-name>
+        <url-pattern>/maps/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>reserveRouteServlet</servlet-name>
         <servlet-class>com.bus.services.servlet.ReserveRouteServlet</servlet-class>
     </servlet>

@@ -1,9 +1,19 @@
 
 .content_header{
-    background-color: darkgray;
+    background-color: gray;
+    height: 45px;
+    padding-left: 10px;
+    line-height: 45px;
+    text-shadow: none;
+    color:#ffffff
+}
+.sub_header{
+    background-color: #d3d3d3;
     height: 40px;
     padding-left: 10px;
     line-height: 40px;
+    text-shadow: none;
+    font-size: large;
 }
 
 .bus_btn{
@@ -99,6 +109,24 @@ h3{
 a, a:hover{
     TEXT-DECORATION:none
 }
+
+.view-reservation:hover{
+    cursor: pointer;
+}
+
+table
+{
+    border-collapse: collapse;
+    border: none;
+    width: 200px;
+}
+td
+{
+    border: solid #d3d3d3 1px;
+    height: 35px;
+    text-align: center;
+}
+
 
 /*used by user pages*/
 .div_with_title{

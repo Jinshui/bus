@@ -1,11 +1,11 @@
 <div data-role="content" style="padding: 0">
-    <div class="content_header" style="background-color: gray;">
+    <div class="content_header">
         <h3>添加车辆:</h3>
     </div>
     <div style="padding: 0 10px">
         {{#each vehicles}}
             <div class="vehicle" id="{{@index}}">
-                <div class="content_header">
+                <div class="sub_header">
                     车辆{{sum @index 1}}
                     <div class="del_button" id="{{@index}}">
                         删除

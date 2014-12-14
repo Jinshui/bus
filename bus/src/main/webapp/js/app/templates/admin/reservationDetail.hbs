@@ -1,0 +1,26 @@
+<div data-role="content" style="padding: 0">
+    <div class="content_header" style="background-color: gray; ">
+        <h3>预订管理</h3>
+    </div>
+    <div class="sub_header">
+        {{routeName}}
+    </div>
+    <div class="text_panel">
+        <div style="font-size: larger">{{vehicle.name}}</div>
+        <div style="color: #808080">车牌 {{vehicle.licenseTag}} {{vehicle.driverName}} {{vehicle.driverContact}}</div>
+        <div style="height: 10px"></div>
+        <div style="color: #808080">
+            {{printDateInChinese date}} {{formatTime time}} 预约{{reservedSeatsCount}}人 空余{{availableSeatsCount}}人
+        </div>
+        <div style="height: 5px"></div>
+        <table style="width: 100%; color: #808080">
+            {{#each passengers}}
+            <tr>
+                <td > {{sum @index 1}} </td>
+                <td colspan="2"> {{userName}} </td>
+                <td colspan="2" style="font-size: larger;">{{phone}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</div>
