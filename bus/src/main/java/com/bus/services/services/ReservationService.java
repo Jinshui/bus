@@ -32,8 +32,15 @@ public class ReservationService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Reservation> find(@QueryParam("routeId")String routeId, @QueryParam("passengerId")String passengerId, @QueryParam("date")Integer date, @QueryParam("time")Integer time) {
-        return reservationRepository.find(routeId, passengerId, date, time);
+        List<Reservation> reservations =  reservationRepository.find(routeId, passengerId, date, time);
+        if(reservations!=null && !reservations.isEmpty()){
+            for(Reservation reservation : reservations){
+                reservation.getRoute().getTimeRanges().clear();
+            }
+        }
+        return reservations;
     }
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

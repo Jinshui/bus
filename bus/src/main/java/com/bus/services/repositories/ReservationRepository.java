@@ -2,11 +2,14 @@ package com.bus.services.repositories;
 
 import com.bus.services.model.Reservation;
 import com.bus.services.repositories.base.BaseRepository;
+import com.bus.services.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -18,8 +21,26 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     public List<Reservation> find(String routeId, String passengerId, Integer date, Integer time) {
-        Criteria criteria = where("status").ne(Reservation.Status.DELETED);
+        Criteria criteria = where("status").ne(Reservation.Status.DELETED.name());
         return findByCriteria(buildCriteria(criteria, routeId, passengerId, date, time));
+    }
+
+    public List<Reservation> findValidReservations(String passengerId) {
+        int date = DateUtil.getYyyyMMdd(Calendar.getInstance());
+        int time = DateUtil.getHHmm(Calendar.getInstance());
+        Criteria criteria = where("status").ne(Reservation.Status.DELETED.name()).and("date").gte(date);
+        List<Reservation> reservations = findByCriteria(criteria);
+        if(reservations!=null){
+            Iterator<Reservation> iterator = reservations.iterator();
+            Calendar calendar = Calendar.getInstance();
+            while(iterator.hasNext()){
+                Reservation reservation = iterator.next();
+                if(reservation.getDate() == DateUtil.getYyyyMMdd(calendar) && reservation.getDepartureTime() <= DateUtil.getHHmm(calendar)){
+                    iterator.remove();
+                }
+            }
+        }
+        return reservations;
     }
 
     public Reservation findOne(String routeId, String passengerId, Integer date, Integer time) {
@@ -31,7 +52,7 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     public List<Reservation> findBetween(Integer date1, Integer date2) {
-        Criteria criteria = where("status").ne(Reservation.Status.DELETED);
+        Criteria criteria = where("status").ne(Reservation.Status.DELETED.name());
         criteria.andOperator(where("date").gte(date1), where("date").lte(date2));
         return findByCriteria(criteria);
     }

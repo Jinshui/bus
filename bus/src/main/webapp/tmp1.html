@@ -1,25 +1,140 @@
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
-    <style type="text/css">
-        <!--
-        #text {
-            width: 200px;
-            height: 200px;
-            text-align: center;
-            border: #FF0000 1px solid;
-            line-height: 200px;
+    <title>html5类似开关的Checkbox / Radio</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="css/bus.css"/>
+    <script src="js/gen/lib.js"></script>
+    <script src="js/gen/template.js"></script>
+    <style>
+        body {
+            background-color: #F2F2F2;
         }
 
-        #text a {
-            font-size: 12px;
-            color: #FF6600l;
+        .radio_frame {
+            width: 100%;
+            text-align: center;
+            /*position: absolute;*/
+            /*top: 75px; left: 0; right: 0; bottom: 0;*/
+            /*width: 150px; height: 40px;*/
+            /*padding: 10px; margin: auto;*/
+            /*border-radius: 40px;*/
+            /*border: 1px solid #EEE;*/
         }
-        -->
+
+        .radio_frame .radio {
+            display: none;
+        }
+
+        .radio_frame .trigger {
+            background-color: white;
+            color: #999999;
+            cursor: pointer;
+            position: relative;
+            padding: 5px 5px;
+            line-height: 30px;
+            margin: 10px;
+            border-radius: 3px;
+            overflow: hidden;
+            text-align: center;
+            -webkit-transition: background .15s linear;
+        }
+
+        .radio_frame .radio:checked + .trigger {
+            background: #00C54F;
+            color: white;
+        }
+
+        .radio_frame .trigger:before {
+            background-color: white;
+            color: #999999;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            /*width: 10px; height: 10px;*/
+            margin: auto 5px;
+            border-radius: 100%;
+            /*box-shadow: 0 0 0 100px hsla(0, 0%, 0%, .3);*/
+            -webkit-transition: left .15s linear;
+        }
+
+        .radio_frame .radio:checked + .trigger:before {
+            left: 10px;
+        }
     </style>
 </head>
 <body>
-<div id="text">
-    <a href="#">我想垂直居中啊，谁来帮帮我.</a>
+<div class="ui-grid-c" style="width:100%">
+    <div class="ui-block-a  radio_frame">
+        <input data-role="none" id="radio_1" class="radio" name="radio" type="radio" checked>
+        <label data-role="none" for="radio_1" class="trigger">Radio 1</label>
+    </div>
+    <div class="ui-block-b  radio_frame">
+        <input data-role="none" id="radio_2" class="radio" name="radio" type="radio">
+        <label data-role="none" for="radio_2" class="trigger">Radio 2</label>
+    </div>
+    <div class="ui-block-c  radio_frame">
+        <input data-role="none" id="radio_3" class="radio" name="radio" type="radio">
+        <label data-role="none" for="radio_3" class="trigger">Radio 3</label>
+    </div>
+    <div class="ui-block-d  radio_frame">
+        <input data-role="none" id="radio_4" class="radio" name="radio" type="radio">
+        <label data-role="none" for="radio_4" class="trigger">Radio 4</label>
+    </div>
+    <div class="ui-block-a  radio_frame">
+        <input data-role="none" id="radio_5" class="radio" name="radio" type="radio">
+        <label data-role="none" for="radio_5" class="trigger">Radio 5</label>
+    </div>
+    <div class="ui-block-b  radio_frame">
+        <input data-role="none" id="radio_6" class="radio" name="radio" type="radio">
+        <label data-role="none" for="radio_6" class="trigger">Radio 6</label>
+    </div>
+    <div class="ui-block-c  radio_frame">
+        <input data-role="none" id="radio_7" class="radio" name="radio" type="radio" checked>
+        <label data-role="none" for="radio_7" class="trigger">Radio 7</label>
+    </div>
+</div>
+
+<div class="ui-grid-c" style="width:100%">
+    <div class="ui-block-a radio_frame">
+        <input data-role="none" id="0-0" class="radio"  name="time-0" type="radio" value="0720" checked="checked">
+        <label data-role="none" for="0-0" class="trigger">07:20</label>
+    </div>
+    <div class="ui-block-b radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-1" value="0740" id="0-1">
+        <label class="trigger" data-role="none" for="0-1">07:40</label>
+    </div>
+    <div class="ui-block-c radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-2" value="0800" id="0-2">
+        <label class="trigger" data-role="none" for="0-2">08:00</label>
+    </div>
+    <div class="ui-block-d radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-3" value="0820" id="0-3">
+        <label class="trigger" data-role="none" for="0-3">08:20</label>
+    </div>
+    <div class="ui-block-a radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-4" value="0840" id="0-4">
+        <label class="trigger" data-role="none" for="0-4">08:40</label>
+    </div>
+    <div class="ui-block-b radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-5" value="0900" id="0-5">
+        <label class="trigger" data-role="none" for="0-5">09:00</label>
+    </div>
+    <div class="ui-block-c radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-6" value="0920" id="0-6">
+        <label class="trigger" data-role="none" for="0-6">09:20</label>
+    </div>
+    <div class="ui-block-d radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-7" value="0940" id="0-7">
+        <label class="trigger" data-role="none" for="0-7">09:40</label>
+    </div>
+    <div class="ui-block-a radio_frame">
+        <input class="radio" data-role="none" type="radio" name="time-8" value="1000" id="0-8">
+        <label class="trigger" data-role="none" for="0-8">10:00</label>
+    </div>
 </div>
 </body>
 </html>

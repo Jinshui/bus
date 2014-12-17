@@ -1,25 +1,28 @@
 <div data-role="content" style="padding: 10px ">
-    <div>
-        <strong style="color:green">{{name}}:</strong> <br>
-        {{startStation}}  <span style="color:green">开往</span>  {{endStation}}<br>
-        <div style="height:5px"></div>
-        <b>途经:</b> {{middleStations}}
+    <div style="font-size: larger">
+        <strong style="color:#6C6969;">{{name}}:</strong> <br>
+        <div style="height:5px;"></div>
+        {{startStation}}  <span style="color:#00C54F">开往</span>  {{endStation}}<br>
+        <div style="height:5px;"></div>
+        <div style="font-size: large">
+        途经: {{middleStations}}
+        </div>
     </div>
     <div style="height:5px"></div>
     <div>
         {{#if availableStartPointsArray}}
-            <strong>请选择乘车时间:</strong><br>
+            <div style="color:#999999;font-size: large">请选择乘车时间:</div>
             <div style="height:5px"></div>
-            <b>{{printDateInChinese selectedDate}}</b><br>
+            {{printDateInChinese selectedDate}}<br>
             <div class="ui-grid-c" style="width:100%">
                 {{#each availableStartPointsArray}}
                     {{#conditionalDiv @index}}
-                        <label for="{{this}}" style="text-align:center;">{{formatTime this}}</label>
-                        <input type="radio" name="firstDay" value="{{this}}" id="{{this}}" data-mini="true">
+                        <input class="radio" data-role="none" type="radio" name="firstDay" value="{{this}}" id="{{this}}">
+                        <label class="trigger" data-role="none" for="{{this}}">{{formatTime this}}</label>
                     {{/conditionalDiv}}
                 {{/each}}
             </div>
-            <div style="border:1px dashed green; color:green; padding: 8px" id="bus_status">
+            <div style="border:1px dashed #00C54F; color:#00C54F; padding: 8px; background-color: white" id="bus_status">
             </div>
             <div style="height:10px"></div>
             <label for="user_phone">请留下您的联系方式,以便司机与您联系:</label>

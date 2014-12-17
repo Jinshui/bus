@@ -28,8 +28,8 @@
                     <div class="ui-grid-c" style="width:100%">
                     {{#each startPointsArray}}
                         {{#conditionalDiv @index}}
-                            <label for="{{@../index}}-{{@index}}" style="text-align:center;">{{formatTime this}}</label>
-                            <input type="radio" name="time-{{@index}}" value="{{this}}" id="{{@../index}}-{{@index}}" data-mini="true">
+                            <input class="radio" data-role="none" type="radio" name="time-{{@index}}" value="{{this}}" id="{{@../index}}-{{@index}}">
+                            <label class="trigger" data-role="none" for="{{@../index}}-{{@index}}">{{formatTime this}}</label>
                         {{/conditionalDiv}}
                     {{/each}}
                     </div>

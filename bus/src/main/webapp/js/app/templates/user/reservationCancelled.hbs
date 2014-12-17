@@ -1,26 +1,31 @@
 <div data-role="content" style="padding: 10px;">
     <div style="padding:5px; background-color:white; color:gray">
         <div style="height:10px; "></div>
-        <div style="font-size: larger">
+        <div style="font-size:  x-large">
             已取消预约
-            <div style="height:10px"><hr></div>
-            {{printDateInChinese reservation.fullDate}} <span style="color:green">{{reservation.timeInHH_mm}}</span>
         </div>
-        <div style="height:7px"></div>
-        {{reservation.route.startStation}}  开往  {{reservation.route.endStation}}<br>
+        <div style="height:10px"></div>
+        <div style="background-color: #EAEAEA; height: 1px"></div>
+        <div style="height:15px"></div>
+        {{printDateInChinese reservation.fullDate}} <span style="color:green">{{reservation.timeInHH_mm}}</span>
+        <div style="height:5px;"></div>
+        {{reservation.route.startStation}}  开往  {{reservation.route.endStation}}
+        <div style="height:5px;"></div>
         途经: {{reservation.route.middleStations}}
-        <div style="padding-top:5px; font-size: larger;">
+        <div style="height:15px;"></div>
+        <div style="padding: 5px 0;font-size: larger; background-color: #F2F2F2">
             乘车地点: {{reservation.route.startStationDesc}}
         </div>
-        <div style="height:15px"><hr></div>
-        车牌: {{reservation.vehicle.licenseTag}}<br>
+        <div style="height:15px"></div>
+        车牌: {{reservation.vehicle.licenseTag}}
+        <div style="height:5px;"></div>
         司机: {{reservation.vehicle.driverNam}} {{reservation.vehicle.driverContact}}
-        <div style="height:7px"></div>
+        <div style="height:5px;"></div>
         统一票价为{{reservation.route.price}}元
     </div>
     <div style="height:20px"></div>
     <div class="div_with_title">
-        <h1 class="div_title"><span style="color: green; background-color: #f9f9f9;"> &nbsp;&nbsp;温馨提示&nbsp;&nbsp;</span></h1>
+        <h1 class="div_title"><span style="color: #00C54F; background-color: #f9f9f9;"> &nbsp;&nbsp;温馨提示&nbsp;&nbsp;</span></h1>
         1. 请提前安排好出行时间, 班车按时发车,不等候;<br>
         2. 稍候系统会通过微信给您发送预约消息, 请上车时出示此消息; <br>
         3. 乘车地点有"一起巴士"的标识, 如果找不到乘车地点, 请与司机联系询问.

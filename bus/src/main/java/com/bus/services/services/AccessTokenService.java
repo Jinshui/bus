@@ -51,6 +51,7 @@ public class AccessTokenService implements Runnable {
             }
             log.debug("====> Got new accessToken: {}", accessToken);
             wxTokenRepository.save(accessToken);
+            this.accessToken = accessToken.getAccessToken();
         } catch (Exception e) {
             log.error("failed to refresh access token due to the error below: ", e);
         }

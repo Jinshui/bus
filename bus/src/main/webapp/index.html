@@ -19,7 +19,7 @@
             }else if(divisor%4 == 3){
                 _class = "ui-block-d";
             }
-            return '<div class="' + _class + '">' + options.fn(this) + '</div>';
+            return '<div class="' + _class + ' radio_frame">' + options.fn(this) + '</div>';
         });
 
         Handlebars.registerHelper('printDateInChinese', function(date) {
@@ -29,25 +29,35 @@
         Handlebars.registerHelper('formatTime', function(time) {
             return formatTime(time);
         });
-
+        var passengerId = null, routeId = null;
         $(document).on("pageinit","#route_detail",function(){
-            var url = window.location.href;
-            var urlArray = url.split('?');
-            if(urlArray.length == 2){
-                var params = urlArray[1].split('=')
-                if(params.length == 2){
-                    if(params[0] === 'routeId'){
-                        var routeId = params[1];
-                        transitionToRoutePage(routeId);
-                    }else if(params[0] === 'passengerId'){
-                        passengerId = params[1];
-                        transitionToReservationListPage(passengerId);
-                    }
-                    return;
-                }
+            var params = parseParams(window.location.href);
+            passengerId = params['passengerId'];
+            routeId = params['routeId'];
+            if(params['type'] === 'routes'){
+                transitionToRouteListPage();
+            }else if(params['type'] === 'route'){
+                transitionToRoutePage(routeId);
+            }else if(params['type'] === 'reservations'){
+                transitionToReservationListPage(passengerId);
             }
-            transitionToRouteListPage();
         });
+
+        function parseParams(url){
+            var urlArray = url.split('?');
+            if(urlArray.length < 2){
+                return {};
+            }
+            var result = {};
+            var params = urlArray[1].split('&');
+            params.forEach(function(param){
+               var paramPair = param.split('=');
+                if(paramPair.length == 2){
+                    result[paramPair[0]] = paramPair[1];
+                }
+            });
+            return result;
+        }
 
         function transitionToRouteListPage(){
             alert('Not implemented yet, coming soon...');
@@ -113,8 +123,10 @@
 
             var generateBusInfo = function(vehicle, time){
                 if(vehicle){
-                    return formatInChineseWeek(route.selectedDate) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个座位。<br>' +
-                            '车牌 ' + vehicle.licenseTag + ' ' + vehicle.driverName + ' ' + vehicle.driverContact + '。<br>' +
+                    return formatInChineseWeek(route.selectedDate) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个座位。' +
+                            '<div style="height: 5px"></div>' +
+                            '车牌 ' + vehicle.licenseTag + ' ' + vehicle.driverName + ' ' + vehicle.driverContact +
+                            '。<div style="height: 5px"></div>' +
                             '票价' + route.price + '元 由' + vehicle.company + '提供服务。';
                 }else{
                     return "请选择您的出发时间"
@@ -123,7 +135,7 @@
             var radioElements = $(":radio");
             var reservationTime;
             if(radioElements.length > 0){
-                $(radioElements[0]).attr("checked", true).checkboxradio("refresh");
+                $(radioElements[0]).attr("checked", true);//.checkboxradio("refresh");
                 reservationTime = Number(radioElements[0].value);
                 var defaultSelectedVehicle = findSelectedVehicle(Number(radioElements[0].value));
                 $('#bus_status').html(generateBusInfo(defaultSelectedVehicle, radioElements[0].value));
@@ -141,7 +153,6 @@
                 var userPhone = $('#user_phone')[0].value;
                 var userName = $('#user_name')[0].value;
                 var date = getYyyyMMdd(route.selectedDate);
-                var openId = 'xxxxxxxx';
                 if(userPhone === '' || userPhone.trim() === ''){
                     showPage('dialog', 'user/dialog', {header:'请补充信息', message:'请输入您的联系电话.以便于司机在必要时联系您.'}, true);
                     return;
@@ -153,7 +164,7 @@
                 var request = JSON.stringify({
                     routeId: route.id,
                     vehicleId: route.selectedVehicle.id,
-                    openId: openId,
+                    openId: passengerId,
                     userName: userName,
                     phone: userPhone,
                     date: date,
@@ -203,8 +214,7 @@
             normalizeReservation(reservation);
             showPage('reservation_cancel', 'user/reservationCancelled', {reservation: reservation});
             $('#btn_restore_cancel').on('click', function(event){
-                var request = buildRestoreReservationRequest(reservation);
-                sendReservationRequest(request);
+                transitionToRoutePage(reservation.route.id);
             });
         }
 
@@ -218,11 +228,17 @@
             }
             showPage('reservation_result', 'user/reservationFailed', {route: route, error: response });
             $('#btn_restore_failed').on('click', function(event){
-                sendReservationRequest(request);
+                history.go(-1);
+//                sendReservationRequest(request);
             });
         }
 
         function showReservationListPage(reservations){
+            if(reservations.length > 0){
+                reservations.forEach(function(reservation){
+                    normalizeReservation(reservation);
+                });
+            }
             showPage('reservation_list', 'user/myReservations', {reservations:reservations});
             $('.btn_cancel_reservation').on('click', function(event){
                 var reservationId = $(event.target).find('#reservationId').attr('value');
@@ -310,7 +326,7 @@
         }
     </script>
 </head>
-<body>
+<body style="background-color: #F2F2F2;">
     <div data-role="page" id="route_detail">
     </div>
     <div data-role="page" id="reservation_result">

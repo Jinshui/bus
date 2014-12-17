@@ -19,7 +19,7 @@
             }else if(divisor%4 == 3){
                 _class = "ui-block-d";
             }
-            return '<div class="' + _class + '">' + options.fn(this) + '</div>';
+            return '<div class="' + _class + ' radio_frame">' + options.fn(this) + '</div>';
         });
 
         Handlebars.registerHelper('formatTime', function(time) {
@@ -291,7 +291,7 @@
     </script>
 </head>
 
-<body>
+<body style="background-color: #F2F2F2;">
     <div data-role="page" id="all_routes">
     </div>
     <div data-role="page" id="edit_route">

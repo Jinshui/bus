@@ -2,6 +2,7 @@ package com.bus.services.model;
 
 import com.bus.services.config.CascadeSave;
 import com.bus.services.model.base.BaseMongoPersistent;
+import com.bus.services.util.DateUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,7 @@ public class Reservation extends BaseMongoPersistent<Reservation> {
     public Date getFullDate(){
         try{
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-            String strDate = "" + getDate() + " " + (getDepartureTime() > 1000 ? "" + getDepartureTime() : "0" + getDepartureTime()) ;
+            String strDate = "" + getDate() + " " + (getDepartureTime() >= 1000 ? "" + getDepartureTime() : "0" + getDepartureTime()) ;
             return format.parse(strDate);
         }catch (Exception e){
             log.error("Failed to parse date time due to", e);

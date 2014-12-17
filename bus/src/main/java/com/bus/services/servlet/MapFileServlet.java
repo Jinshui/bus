@@ -14,21 +14,27 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class MapFileServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MapFileServlet.class);
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String absolutionPath = "";
+        OutputStream os = null;
         try{
             WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
             RoutesService routesService = (RoutesService)wac.getBean("routesService");
             String filePath = req.getRequestURI().replaceFirst(req.getContextPath(), "");
             absolutionPath = routesService.getUploadPath() + filePath;
-            byte[] imageBytes = IOUtils.readBytesFromStream(new FileInputStream(new File(absolutionPath)));
-            resp.getOutputStream().write(imageBytes);
-            resp.getOutputStream().flush();
+            os = resp.getOutputStream();
+            IOUtils.copy(new FileInputStream(new File(absolutionPath)), os);
+            os.flush();
         }catch (Exception e){
             log.error("Error handling map request " + absolutionPath + " due to: ", e);
+        }finally{
+            if(os != null){
+                try{ os.close(); }catch (Exception e){}
+            }
         }
     }
 }

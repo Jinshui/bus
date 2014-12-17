@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xml>
+    <FromUserName>gh_ec38e9012693</FromUserName>
+    <ToUserName>onfMQuCwQ0PMzVCf0E9PMWEloRYU</ToUserName>
+    <MsgType>news</MsgType>
+    <CreateTime>1418825687</CreateTime>
+    <ArticleCount>0</ArticleCount>
+    <Articles>
+        <item>
+            <Title>[预订]望京西站 发往 望京Soho, 途经悠乐汇、竹藤大厦、方恒国际</Title>
+            <Description></Description>
+            <PicUrl>http://182.92.165.63/bus/maps/map_1418737474785_è±è±èæªå¾20141216212333.png</PicUrl>
+            <Url>http://182.92.165.63/bus/index.html?type=route&amp;routeId=548c70460cf29cd3934e4c06&amp;passengerId=onfMQuCwQ0PMzVCf0E9PMWEloRYU</Url>
+        </item>
+        <item>
+            <Title>[预订]花家地 发往 崔各庄, 途经索尼大夏、家乐福</Title>
+            <Description></Description>
+            <PicUrl>http://182.92.165.63/bus/maps/map_1418724499240_127308861_title0h.jpg</PicUrl>
+            <Url>http://182.92.165.63/bus/index.html?type=route&amp;routeId=549004930cf20c4f0c4aaf53&amp;passengerId=onfMQuCwQ0PMzVCf0E9PMWEloRYU</Url>
+        </item>
+    </Articles>
+</xml>
+<xml>
+<ToUserName><![CDATA[toUser]]></ToUserName>
+<FromUserName><![CDATA[fromUser]]></FromUserName>
+<CreateTime>12345678</CreateTime>
+<MsgType><![CDATA[news]]></MsgType>
+<ArticleCount>2</ArticleCount>
+<Articles>
+    <item>
+        <Title><![CDATA[title1]]></Title>
+        <Description><![CDATA[description1]]></Description>
+        <PicUrl><![CDATA[picurl]]></PicUrl>
+        <Url><![CDATA[url]]></Url>
+    </item>
+    <item>
+        <Title><![CDATA[title]]></Title>
+        <Description><![CDATA[description]]></Description>
+        <PicUrl><![CDATA[picurl]]></PicUrl>
+        <Url><![CDATA[url]]></Url>
+    </item>
+</Articles>
+</xml>
