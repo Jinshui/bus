@@ -3,6 +3,8 @@ package com.bus.services.services;
 
 import com.bus.services.exceptions.ApplicationException;
 import com.bus.services.model.*;
+import com.bus.services.model.weixin.Article;
+import com.bus.services.model.weixin.CustomPhotoTextMessage;
 import com.bus.services.repositories.PassengerRepository;
 import com.bus.services.repositories.ReservationRepository;
 import com.bus.services.util.DateUtil;
@@ -27,6 +29,8 @@ public class ReservationService {
     ReservationRepository reservationRepository;
     @Resource
     PassengerRepository passengerRepository;
+    @Resource
+    WeixinService weixinService;
     @Autowired
     ObjectMapper objectMapper;
     @GET
@@ -165,8 +169,12 @@ public class ReservationService {
         reservation.setDepartureTime(formData.getTime());
         reservation.setDate(formData.getDate());
         reservationRepository.save(reservation);
-        return find(reservation.getId());
+        reservation = find(reservation.getId());
+        weixinService.sendCustomMessage(reservation, true);
+        return reservation;
     }
+
+
     @DELETE
     @Path("/{id}")
     public void deleteReservation(@PathParam("id")String id, @QueryParam("pid")String pid) throws ApplicationException {
@@ -177,5 +185,6 @@ public class ReservationService {
         }
         reservation.setStatus(Reservation.Status.DELETED);
         reservationRepository.save(reservation);
+        weixinService.sendCustomMessage(reservation, false);
     }
 }

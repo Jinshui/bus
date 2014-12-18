@@ -14,6 +14,7 @@ import org.apache.cxf.helpers.XMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 @Path("/weixin")
@@ -57,6 +59,8 @@ public class WeixinService {
     private String MSG_MY_RESERVATIONS_URL;
     @Value("${wx.msg.reservations.title}")
     private String MSG_MY_RESERVATIONS_TITLE;
+    @Value("${wx.msg.reservation.cancel}")
+    private String MSG_CANCEL_RESERVATION;
     @Value("${wx.msg.reservations.empty}")
     private String MSG_MY_RESERVATIONS_EMPTY;
     @Value("${wx.msg.reservations.description}")
@@ -67,6 +71,9 @@ public class WeixinService {
     private String MSG_OTHER_ANNOUNCEMENTS;
     @Value("${wx.msg.other.new.route}")
     private String MSG_OTHER_NEW_ROUTE;
+    @Value("${wx.msg.admin.urls}")
+    private String MSG_ADMIN_URLS;
+
     @Resource
     private ObjectMapper objectMapper;
     @Resource
@@ -95,8 +102,15 @@ public class WeixinService {
             }
             log.info("request message: {}", messageObject);
             if(messageObject instanceof TextRequest){
-                //TODO: what to do here?
-                log.warn("Nothing to do with text message {}", ((TextRequest) messageObject).getContent());
+                TextRequest textRequest = (TextRequest)messageObject;
+                if("1784#admin#".equals(textRequest.getContent())){
+                    TextResponse response = new TextResponse(messageObject);
+                    response.setContent(MSG_ADMIN_URLS);
+                    responseMessage = response;
+                }else{
+                    //TODO: what to do here?
+                    log.warn("Nothing to do with text message {}", ((TextRequest) messageObject).getContent());
+                }
             }else if(messageObject instanceof EventRequest){
                 responseMessage = handleEventMessage((EventRequest)messageObject);
             }else{
@@ -110,15 +124,46 @@ public class WeixinService {
         return Response.ok().entity(responseMessage).build();
     }
 
-    public void sendCustomMessage(BaseRequest message){
+    @Async
+    public void sendCustomMessage(Reservation reservation, boolean add){
         String jsonString = null;
         try {
-            log.info("sending custom message to user {} ", message.getToUser());
-            String url = String.format(SEND_CUSTOM_MESSAGE_URL, accessTokenService.getAccessToken());
+            CustomMessage message = buildCustomMessage(reservation, add);
             jsonString = objectMapper.writeValueAsString(message);
+            log.info("sending custom message to user {}, {} ", message.getToUser(), jsonString);
+            String url = String.format(SEND_CUSTOM_MESSAGE_URL, accessTokenService.getAccessToken());
             HttpUtils.executePost(url, jsonString);
         }catch (Exception e) {
-            log.info("Error sending message to {} : {}", message.getToUser(), jsonString);
+            log.error(String.format("Error sending message to %s : %s", reservation.getPassenger().getId(), jsonString), e);
+        }
+    }
+
+    private CustomMessage buildCustomMessage(Reservation reservation, boolean add){
+        if(add){
+            CustomPhotoTextMessage customPhotoTextMessage = new CustomPhotoTextMessage();
+            customPhotoTextMessage.setToUser(reservation.getPassenger().getId());
+            Article article = new Article();
+            article.setTitle(MSG_MY_RESERVATIONS_TITLE);
+            article.setUrl(String.format(MSG_MY_RESERVATIONS_URL, reservation.getPassenger().getId()));
+            article.setDescription(String.format(MSG_MY_RESERVATIONS_DESCRIPTION,
+                    DateUtil.toChineseDate(reservation.getFullDate()),
+                    reservation.getRoute().getStartStation(),
+                    reservation.getRoute().getMiddleStations()+", "+reservation.getRoute().getEndStation(),
+                    reservation.getRoute().getStartStationDesc(),
+                    reservation.getVehicle().getLicenseTag(),
+                    reservation.getVehicle().getDriverName(),
+                    reservation.getVehicle().getDriverContact(),
+                    reservation.getRoute().getPrice()));
+            customPhotoTextMessage.addArticle(article);
+            return customPhotoTextMessage;
+        }else{
+            CustomTextMessage message = new CustomTextMessage();
+            message.setToUser(reservation.getPassenger().getId());
+            message.setContent(String.format(MSG_CANCEL_RESERVATION,
+                    DateUtil.toChineseDate(reservation.getFullDate()),
+                    reservation.getRoute().getStartStation(),
+                    reservation.getRoute().getEndStation()));
+            return message;
         }
     }
 

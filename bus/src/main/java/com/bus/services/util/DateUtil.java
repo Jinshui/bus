@@ -26,7 +26,7 @@ public class DateUtil {
 
     public static String toChineseDate(Calendar calendar){
         String[] weekdays = {"日", "一", "二", "三", "四", "五", "六"};
-        String format = "MM月dd日 星期" + weekdays[calendar.get(Calendar.DAY_OF_WEEK)] + " HH:mm";
+        String format = "MM月dd日 星期" + weekdays[calendar.get(Calendar.DAY_OF_WEEK) - 1] + " HH:mm";
         SimpleDateFormat frm1 = new SimpleDateFormat(format);
         return frm1.format(calendar.getTime());
     }

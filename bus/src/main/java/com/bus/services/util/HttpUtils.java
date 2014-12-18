@@ -57,8 +57,8 @@ public class HttpUtils {
         log.debug("Executing POST request to {} : {}", url, body);
         try{
             HttpPost request = new HttpPost(url);
-            request.setEntity(new StringEntity(body));
-            request.setHeader("Content-Type", "application/json;charset=utf-8");
+            request.setEntity(new StringEntity(body, "UTF-8"));
+            request.setHeader("Content-Type", "application/json;charset=UTF-8");
             StringResponseHandler stringResponseHandler = new StringResponseHandler();
             getCloseableHttpClient().execute(request, stringResponseHandler);
             return stringResponseHandler.getResult();

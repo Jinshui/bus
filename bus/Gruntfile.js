@@ -141,7 +141,7 @@ module.exports = function(grunt) {
     grunt.registerTask("default", function() {
         process.env['ENV'] = "prod";
         console.log("%s", process.env['ENV']);
-        grunt.task.run("handlebars", "concat");
+        grunt.task.run("handlebars", "concat", "minify");
     });
 
     grunt.registerTask("dev", function() {
