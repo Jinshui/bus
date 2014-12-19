@@ -88,7 +88,7 @@
         function showRouteDetailPage(route){
             if(route && route.timeRanges && route.timeRanges.length > 0){
                 //closestAvailableDate is computed and returned from server
-                route.selectedDate = new Date(route.closestAvailableDate);
+                route.selectedDate = moment(route.closestAvailableDate).toDate();
                 route.availableStartPointsArray = [];
                 var _startPointsArray = route.timeRanges[0].startPoints.split(' ');
                 if(_startPointsArray){
@@ -284,7 +284,7 @@
         function normalizeReservation(reservation){
             reservation.timeInHH_mm = formatTime(reservation.departureTime);
             //convert string to data object
-            reservation.fullDate = new Date(reservation.fullDate);
+            reservation.fullDate = moment(reservation.fullDate).toDate();
         }
 
         //Some date utility functions

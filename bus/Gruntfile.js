@@ -29,7 +29,8 @@ module.exports = function(grunt) {
                     basedir + "/js/libs/jquery.iframe-transport.js",
                     basedir + "/js/libs/jquery.ui.widget.js",
                     basedir + "/js/libs/jquery.fileupload.js",
-                    basedir + "/js/libs/handlebars-v2.0.0.js"
+                    basedir + "/js/libs/handlebars-v2.0.0.js",
+                    basedir + "/js/libs/moment-with-locale.js"
                 ],
                 dest: basedir + "/js/gen/lib.js"
             },
