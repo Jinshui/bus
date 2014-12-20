@@ -20,9 +20,11 @@
             <div style="height:15px"></div>
             车牌: {{vehicle.licenseTag}}
             <div style="height:5px;"></div>
-            司机: {{vehicle.driverNam}} <span style="background-color: #00C54F">{{vehicle.driverContact}}</span>
+            司机: {{vehicle.driverName}}&nbsp;&nbsp;<a href="tel:{{vehicle.driverContact}}">{{vehicle.driverContact}}</a>
             <div style="height:5px;"></div>
             统一票价为{{route.price}}元
+            <div style="height:5px;"></div>
+            乘客：{{passenger.userName}}&nbsp;&nbsp;{{passenger.phone}}
         </div>
         <div class="btn_cancel_reservation footer_btn" style="background-color:red">
             <input type="hidden" id="reservationId" name="reservationId" value="{{id}}">

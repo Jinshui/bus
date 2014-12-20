@@ -59,6 +59,11 @@ public class ReservationRepository extends BaseRepository<Reservation> {
         return findByCriteria(criteria);
     }
 
+    public List<Reservation> findAfter(Integer date) {
+        Criteria criteria = where("status").ne(Reservation.Status.DELETED.name()).and("date").gte(date);
+        return findByCriteria(criteria);
+    }
+
     private Criteria buildCriteria(Criteria criteria, String routeId, String passengerId, Integer date, Integer time){
         if(StringUtils.isNotEmpty(routeId)){
             criteria.and("routeId").is(routeId);

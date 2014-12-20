@@ -62,9 +62,10 @@ public class ReservationService {
         Map<String, ReservationMgmtList> reservationMgmtMap = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
         int startDate = DateUtil.getYyyyMMdd(calendar);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        int endDate = DateUtil.getYyyyMMdd(calendar);
-        List<Reservation> reservations = reservationRepository.findBetween(startDate, endDate);
+//        calendar.add(Calendar.DAY_OF_MONTH, 1);
+//        int endDate = DateUtil.getYyyyMMdd(calendar);
+//        List<Reservation> reservations = reservationRepository.findBetween(startDate, endDate);
+        List<Reservation> reservations = reservationRepository.findAfter(startDate);
 
         for(Reservation reservation : reservations){
             String routeId = reservation.getRoute().getId();

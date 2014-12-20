@@ -9,7 +9,7 @@
         "key" : "MY_RESERVATIONS"
     }, {
         "name" : "其它",
-        "sub_button" : [ {
+        "sub_button" : [{
             "type" : "click",
             "name" : "线路申请",
             "key" : "REQUEST_NEW_ROUTE"
@@ -18,6 +18,10 @@
             "name" : "巴士公告",
             "key" : "ANNOUNCEMENTS"
         }, {
+            "type" : "view",
+            "name" : "使用条款",
+            "url" : "http://182.92.165.63/bus/terms.html"
+        },{
             "type" : "click",
             "name" : "联系我们",
             "key" : "CONTACT_US"

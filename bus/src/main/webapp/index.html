@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>1784</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no" charset="UTF-8">
     <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
     <link rel="stylesheet" href="css/bus.css"/>
     <script src="js/gen/lib.js"></script>
@@ -121,11 +121,23 @@
                 return selectedVehicle;
             };
 
-            var generateBusInfo = function(vehicle, time){
+            /**
+             *
+             * 您已选择12月21日 星期日 07:00的巴士
+             车牌号为京A1234，剩余座位：15个   //其中：剩余座位：15个 加粗
+             联系人：陈师傅 13913911391
+             票价12元 由一起巴士提供服务。
+             * @param vehicle
+             * @param time
+             * @returns {string}
+             */
+            var generateBusInfo = function(vehicle, time){//<a href="tel:{{vehicle.driverContact}}">{{vehicle.driverContact}}</a>
                 if(vehicle){
-                    return formatInChineseWeek(route.selectedDate) + ' ' + formatTime(time) + '的巴士剩余' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个座位。' +
+                    return  '您已选择'+formatInChineseWeek(route.selectedDate) + ' ' + formatTime(time) + '的巴士<br>'+
                             '<div style="height: 5px"></div>' +
-                            '车牌 ' + vehicle.licenseTag + ' ' + vehicle.driverName + ' ' + vehicle.driverContact +
+                            '车牌号为' + vehicle.licenseTag + ', 剩余座位: <b>' + vehicle.availableSeats[vehicle.startPoints.indexOf(Number(time))] + '个</b>' +
+                            '<div style="height: 5px"></div>' +
+                            '联系人：' + vehicle.driverName + ' <a href="tel:' + vehicle.driverContact + '">' + vehicle.driverContact + '</a>' +
                             '。<div style="height: 5px"></div>' +
                             '票价' + route.price + '元 由' + vehicle.company + '提供服务。';
                 }else{
@@ -154,11 +166,15 @@
                 var userName = $('#user_name')[0].value;
                 var date = getYyyyMMdd(route.selectedDate);
                 if(userPhone === '' || userPhone.trim() === ''){
-                    showPage('dialog', 'user/dialog', {header:'请补充信息', message:'请输入您的联系电话.以便于司机在必要时联系您.'}, true);
+                    showPage('dialog', 'user/dialog', {header:'请输入手机号码', message:'请输入您的手机号码(由13/15/18开头的11位数字组成).以便于司机在必要时联系您.'}, true);
+                    return;
+                }
+                if(!/^1[358]\d{9}$/.test(userPhone.trim())){
+                    showPage('dialog', 'user/dialog', {header:'手机号码无效', message:'请正确输入您的手机号码(由13/15/18开头的11位数字组成),以便于司机在必要时联系您.'}, true);
                     return;
                 }
                 if(userName === '' || userName.trim() === ''){
-                    showPage('dialog', 'user/dialog', {header:'请补充信息', message:'请输入称呼.以便于司机在必要时联系您.'}, true);
+                    showPage('dialog', 'user/dialog', {header:'请输入称呼', message:'请输入您的称呼.以便于司机在必要时联系您.'}, true);
                     return;
                 }
                 var request = JSON.stringify({
@@ -166,7 +182,7 @@
                     vehicleId: route.selectedVehicle.id,
                     openId: passengerId,
                     userName: userName,
-                    phone: userPhone,
+                    phone: userPhone.trim(),
                     date: date,
                     time: reservationTime
                 });

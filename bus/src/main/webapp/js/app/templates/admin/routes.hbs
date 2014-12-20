@@ -21,7 +21,7 @@
             <div class="text_panel">
                 {{#each vehicles}}
                     <b>{{name}}:</b><br>
-                    {{licenseTag}}&nbsp;{{driverName}}&nbsp;{{driverContact}}<br>
+                    {{licenseTag}}&nbsp;{{driverName}}&nbsp;<a href="tel:{{driverContact}}">{{driverContact}}</a><br>
                     发车时间: {{#each startPoints}}{{formatTime this}}, {{/each}}
                     <hr>
                 {{/each}}

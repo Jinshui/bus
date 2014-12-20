@@ -19,7 +19,7 @@
         <div style="height:15px"></div>
         车牌: {{reservation.vehicle.licenseTag}}
         <div style="height:5px;"></div>
-        司机: {{reservation.vehicle.driverNam}} {{reservation.vehicle.driverContact}}
+        司机: {{reservation.vehicle.driverName}} <a href="tel:{{reservation.vehicle.driverContact}}">{{reservation.vehicle.driverContact}}</a>
         <div style="height:5px;"></div>
         统一票价为{{reservation.route.price}}元
     </div>

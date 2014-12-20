@@ -210,7 +210,8 @@ public class WeixinService {
                 return handleClickMessage(clickEventMessage);
             }
             case VIEW:
-                log.warn("Nothing to do with message {}", eventMessage);
+                MenuEventRequest viewEventMessage = (MenuEventRequest)eventMessage;
+                log.warn("User {} is viewing {}", viewEventMessage.getFromUser(), viewEventMessage.getEventKey());
                 break;
             default:
                 log.warn("Unsupported event message was received: {}", eventMessage);
@@ -233,7 +234,7 @@ public class WeixinService {
                         Article article = new Article();
                         article.setUrl(String.format(MSG_DETAIL_URL, route.getId(), clickEventMessage.getFromUser()));
                         article.setPicUrl(String.format(MSG_IMAGE_URL, route.getMapFileName()));
-                        article.setTitle(String.format(MSG_ROUTE_TITLE, route.getStartStation(), route.getEndStation(), route.getMiddleStations()));
+                        article.setTitle(String.format(MSG_ROUTE_TITLE, route.getName(), route.getStartStation(), route.getEndStation(), route.getMiddleStations()));
                         article.setDescription("");
                         photoTextResponse.addArticle(article);
                     }

@@ -9,7 +9,7 @@
         {{#each vehicles}}
             <div class="text_panel">
                 <div style="font-size: larger">{{name}}</div>
-                <div style="color: #808080">车牌 {{licenseTag}} {{driverName}} {{driverContact}}</div>
+                <div style="color: #808080">车牌 {{licenseTag}} {{driverName}} <a href="tel:{{driverContact}}">{{driverContact}}</a></div>
                 <div style="height: 10px"></div>
                 {{#each reservationStats}}
                     <div style="color: #808080">
