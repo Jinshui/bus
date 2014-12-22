@@ -9,6 +9,7 @@ import com.bus.services.repositories.PassengerRepository;
 import com.bus.services.repositories.ReservationRepository;
 import com.bus.services.util.DateUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,12 @@ public class ReservationService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Reservation> find(@QueryParam("routeId")String routeId, @QueryParam("passengerId")String passengerId, @QueryParam("date")Integer date, @QueryParam("time")Integer time) {
-        List<Reservation> reservations =  reservationRepository.find(routeId, passengerId, date, time);
+        List<Reservation> reservations = null;
+        if(StringUtils.isEmpty(routeId) && date == null && time == null && StringUtils.isNotEmpty(passengerId)){
+            reservations = reservationRepository.findValidReservations(passengerId);
+        }else{
+            reservations = reservationRepository.find(routeId, passengerId, date, time);
+        }
         if(reservations!=null && !reservations.isEmpty()){
             for(Reservation reservation : reservations){
                 reservation.getRoute().getTimeRanges().clear();
@@ -62,10 +68,9 @@ public class ReservationService {
         Map<String, ReservationMgmtList> reservationMgmtMap = new HashMap<>();
         Calendar calendar = Calendar.getInstance();
         int startDate = DateUtil.getYyyyMMdd(calendar);
-//        calendar.add(Calendar.DAY_OF_MONTH, 1);
-//        int endDate = DateUtil.getYyyyMMdd(calendar);
-//        List<Reservation> reservations = reservationRepository.findBetween(startDate, endDate);
-        List<Reservation> reservations = reservationRepository.findAfter(startDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        int endDate = DateUtil.getYyyyMMdd(calendar);
+        List<Reservation> reservations = reservationRepository.findBetween(startDate, endDate);
 
         for(Reservation reservation : reservations){
             String routeId = reservation.getRoute().getId();

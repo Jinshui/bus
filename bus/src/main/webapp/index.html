@@ -75,6 +75,8 @@
         }
 
         function transitionToReservationListPage(passengerId){
+            var date = getYyyyMMdd(new Date());
+            var time = getHHmm(new Date());
             $.ajax({
                 type: 'GET',
                 url: "/bus/services/reservations?" + "passengerId=" + passengerId
@@ -175,6 +177,10 @@
                 }
                 if(userName === '' || userName.trim() === ''){
                     showPage('dialog', 'user/dialog', {header:'请输入称呼', message:'请输入您的称呼.以便于司机在必要时联系您.'}, true);
+                    return;
+                }
+                if(route.selectedVehicle.availableSeats[route.selectedVehicle.startPoints.indexOf(Number(reservationTime))] == 0){
+                    showPage('dialog', 'user/dialog', {header:'车辆已满员', message:'该车次已满员, 请选择其它时间段的车次出行.'}, true);
                     return;
                 }
                 var request = JSON.stringify({

@@ -27,7 +27,6 @@ public class ReservationRepository extends BaseRepository<Reservation> {
 
     public List<Reservation> findValidReservations(String passengerId) {
         int date = DateUtil.getYyyyMMdd(Calendar.getInstance());
-        int time = DateUtil.getHHmm(Calendar.getInstance());
         Criteria criteria = where("status").ne(Reservation.Status.DELETED.name()).and("date").gte(date);
         if(passengerId != null)
             criteria.and("passenger.$id").is(passengerId);

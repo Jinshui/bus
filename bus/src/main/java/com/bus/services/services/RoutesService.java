@@ -116,7 +116,7 @@ public class RoutesService {
                         vehicle.getAvailableSeats().add(i, vehicle.getSeatCount());
                         int reservedSeats = 0;
                         for(Reservation reservation : reservations){
-                            if(reservation.getDate() == startPoint.intValue()){
+                            if(reservation.getDepartureTime() == startPoint.intValue()){
                                 reservedSeats ++;
                             }
                         }
@@ -197,5 +197,10 @@ public class RoutesService {
 
     public String getUploadPath(){
         return uploadPath;
+    }
+
+    public static void main(String[] args) {
+        Calendar calendar = Calendar.getInstance();
+        System.out.println(calendar.get(Calendar.DAY_OF_WEEK));
     }
 }
