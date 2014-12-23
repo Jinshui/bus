@@ -3,8 +3,8 @@
 <head>
     <title>1784</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no" charset="UTF-8">
-    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
-    <link rel="stylesheet" href="css/bus.css"/>
+    <link rel="stylesheet" href="css/jquery-min.css"/>
+    <link rel="stylesheet" href="css/bus-min.css"/>
     <script src="js/gen/lib.js"></script>
     <script src="js/gen/template.js"></script>
     <script>
@@ -167,6 +167,11 @@
                 var userPhone = $('#user_phone')[0].value;
                 var userName = $('#user_name')[0].value;
                 var date = getYyyyMMdd(route.selectedDate);
+
+
+                showPage('dialog', 'user/dialog', {header:'敬请期待', message:'感谢您的预约, 我们的线路将于12月29日正式开通, 本周末就可以预约啦, 届时还有惊喜哦......'}, true);
+
+                /**
                 if(userPhone === '' || userPhone.trim() === ''){
                     showPage('dialog', 'user/dialog', {header:'请输入手机号码', message:'请输入您的手机号码(由13/15/18开头的11位数字组成).以便于司机在必要时联系您.'}, true);
                     return;
@@ -193,6 +198,7 @@
                     time: reservationTime
                 });
                 sendReservationRequest(request, route);
+                 **/
             });
         }
 

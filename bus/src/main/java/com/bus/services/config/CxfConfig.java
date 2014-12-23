@@ -1,6 +1,7 @@
 package com.bus.services.config;
 
 import com.bus.services.config.cxf.InvokeFaultExceptionMapper;
+import com.bus.services.services.AuthenticationService;
 import com.bus.services.services.ReservationService;
 import com.bus.services.services.RoutesService;
 import com.bus.services.services.WeixinService;
@@ -40,6 +41,8 @@ public class CxfConfig {
     private ReservationService reservationService;
     @Resource
     private WeixinService weixinService;
+    @Resource
+    private AuthenticationService authenticationService;
 
     //Beans for metamore-ui
     public static class BusObjectMapper extends ObjectMapper {
@@ -77,6 +80,7 @@ public class CxfConfig {
         serviceBeans.add(routesService);
         serviceBeans.add(reservationService);
         serviceBeans.add(weixinService);
+        serviceBeans.add(authenticationService);
         JAXRSServerFactoryBean factoryBean = new JAXRSServerFactoryBean();
         factoryBean.setAddress("");
         factoryBean.setServiceBeans(serviceBeans);

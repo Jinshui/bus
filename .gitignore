@@ -10,3 +10,5 @@ services/src/main/webapp/js/gen
 services/node_modules
 bus/src/main/webapp/js/gen
 bus/node_modules
+bus-min.css
+jquery-min.css

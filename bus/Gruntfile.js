@@ -83,9 +83,9 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: basedir + "/css",
-                    src: ['*.css'],
+                    src: ['jquery.mobile-1.4.5.css', 'bus.css'],
                     dest: basedir + "/temp/min",
-                    ext: '.css'
+                    ext: '-min.css'
                 }]
             }
         },

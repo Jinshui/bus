@@ -3,8 +3,8 @@
 <head>
     <title>路线管理</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css"/>
-    <link rel="stylesheet" href="css/bus.css"/>
+    <link rel="stylesheet" href="css/jquery-min.css"/>
+    <link rel="stylesheet" href="css/bus-min.css"/>
     <script src="js/gen/lib.js"></script>
     <script src="js/gen/template.js"></script>
     <script>
@@ -36,12 +36,32 @@
             return num1 + num2;
         });
 
-        $(document).on("pageinit","#all_routes",function(){
-            transitionToRoutesPage();
+        $(document).on("pageinit","#admin_login",function(){
+            transitionToLoginPage();
         });
 
         function showLoading(message){
 
+        }
+
+        function transitionToLoginPage(){
+            showPage('admin_login', 'admin/login', {});
+            $('#btn_login').on('click', function(event){
+                var userName = $("#userName")[0].value;
+                var password = $("#password")[0].value;
+                var data = {userName: userName, password: password};
+                $.ajax({
+                    type: 'POST',
+                    url: "/bus/services/authenticate",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                    processData : false
+                }).done(function( data, textStatus, jqXHR ){
+                    transitionToRoutesPage();
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    $('#message').html(jqXHR.responseText);
+                });
+            });
         }
 
         function transitionToRoutesPage(){
@@ -296,6 +316,8 @@
 </head>
 
 <body style="background-color: #F2F2F2;">
+    <div data-role="page" id="admin_login">
+    </div>
     <div data-role="page" id="all_routes">
     </div>
     <div data-role="page" id="edit_route">
